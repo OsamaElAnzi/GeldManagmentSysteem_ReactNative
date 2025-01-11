@@ -1,7 +1,5 @@
 import { Tabs } from "expo-router";
-
-import Ionicons from "@expo/vector-icons/Ionicons";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -31,12 +29,16 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, focused }) => (
-            <AntDesign name="setting" size={24} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+            name="settings"
+            size={24}
+            color={color} />
           ),
         }}
       />

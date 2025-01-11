@@ -1,11 +1,37 @@
-import { View } from 'react-native';
+import React from "react";
+import { StyleSheet, SafeAreaView, Text } from "react-native";
 
-function index() {
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import Vermogen from "@/components/Vermogen";
+import NogTeGaan from "@/components/NogTeGaan";
+import Spaardoel from "@/components/Spaardoel";
+
+function Index() {
   return (
-    <View>
-      test
-    </View>
-  )
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Vermogen />
+        <NogTeGaan />
+        <Spaardoel />
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }
 
-export default index
+export default Index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 24,
+    alignItems: "center",
+  },
+  container2: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 24,
+    alignItems: "center",
+    marginTop: 20,
+  },
+});
