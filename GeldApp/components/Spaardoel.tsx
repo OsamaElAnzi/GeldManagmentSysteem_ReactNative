@@ -3,34 +3,36 @@ import { View, Text, StyleSheet } from "react-native";
 
 function Spaardoel() {
   return (
-    <View style={style.card}>
-      <Text>Spaardoel</Text>
-    </View>
+    <View style={styles.container}>
+          <View style={styles.card}>
+            <Text style={styles.cardText}>Spaardoel</Text>
+          </View>
+        </View>
   );
 }
 
 export default Spaardoel;
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "center",
     marginTop: 10,
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
   },
   card: {
-    marginTop: 10,
-    width: 300,
-    height: 100,
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    width: 320,
+    height: 120,
+    backgroundColor: "#ffffff",
+    padding: 25,
+    borderRadius: 12,
+    elevation: 6,
     justifyContent: "center",
     alignItems: "center",
+  },
+  cardText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#2f3c53",
   },
 });

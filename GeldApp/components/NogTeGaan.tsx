@@ -3,33 +3,37 @@ import { View, Text, StyleSheet } from "react-native";
 
 function NogTeGaan() {
   return (
-    <View style={style.card}>
-      <Text>NogTeGaan</Text>
-    </View>
+    <View style={styles.container}>
+          <View style={styles.card}>
+            <Text style={styles.cardText}>Nog te gaan</Text>
+            <Text style={styles.cardText}></Text>
+          </View>
+        </View>
   );
 }
 
 export default NogTeGaan;
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "center",
+    marginTop: 10,
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
   },
   card: {
-    width: 300,
-    height: 100,
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    width: 320,
+    height: 120,
+    backgroundColor: "#ffffff",
+    padding: 25,
+    borderRadius: 12,
+    elevation: 6,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+  },
+  cardText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#2f3c53",
   },
 });

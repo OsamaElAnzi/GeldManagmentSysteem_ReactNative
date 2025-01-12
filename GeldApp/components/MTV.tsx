@@ -9,6 +9,7 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RadioButton } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
@@ -29,20 +30,52 @@ function MTV() {
     { label: "200 EUR", value: "200" },
     { label: "500 EUR", value: "500" },
   ]);
+
   const resetForm = () => {
     onChangeBedrag("");
     onChangeBeschrijfing("");
     onChangeTypeTransactie("");
+    onChangeTypeBiljet("");
   };
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
     if (!bedrag || !typeTransactie || !beschrijving) {
       Alert.alert("Fout", "Vul alle velden in!");
       return;
     }
-    console.log({ bedrag, typeTransactie, beschrijving });
-    resetForm();
-    setModalVisible(false);
+
+    const transaction = {
+      bedrag,
+      typeTransactie,
+      beschrijving,
+      typeBiljet,
+    };
+
+    try {
+      // Get any existing transactions from AsyncStorage
+      const existingTransactions = await AsyncStorage.getItem("@transactie");
+
+      // If there are existing transactions, parse them into an array, otherwise use an empty array
+      const transactions = existingTransactions
+        ? JSON.parse(existingTransactions)
+        : [];
+
+      // Add the new transaction to the array
+      transactions.push(transaction);
+
+      // Save the updated array back to AsyncStorage
+      await AsyncStorage.setItem("@transactie", JSON.stringify(transactions));
+
+      resetForm();
+      setModalVisible(false);
+      Alert.alert("Succes", "Transactie succesvol opgeslagen!");
+    } catch (error) {
+      Alert.alert(
+        "Fout",
+        "Er is iets mis gegaan met het opslaan van de transactie!"
+      );
+      console.error("Error saving to AsyncStorage:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -77,7 +110,9 @@ function MTV() {
                 <View style={styles.radioButton}>
                   <RadioButton
                     value="INKOMEN"
-                    status={typeTransactie === "INKOMEN" ? "checked" : "unchecked"}
+                    status={
+                      typeTransactie === "INKOMEN" ? "checked" : "unchecked"
+                    }
                     onPress={() => onChangeTypeTransactie("INKOMEN")}
                   />
                   <Text style={styles.radioLabel}>INKOMEN</Text>
@@ -85,7 +120,9 @@ function MTV() {
                 <View style={styles.radioButton}>
                   <RadioButton
                     value="UITGAVEN"
-                    status={typeTransactie === "UITGAVEN" ? "checked" : "unchecked"}
+                    status={
+                      typeTransactie === "UITGAVEN" ? "checked" : "unchecked"
+                    }
                     onPress={() => onChangeTypeTransactie("UITGAVEN")}
                   />
                   <Text style={styles.radioLabel}>UITGAVEN</Text>
@@ -146,7 +183,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#2f3c53", // Deep blue-gray for a professional feel
+    backgroundColor: "#2f3c53",
     borderRadius: 15,
     padding: 35,
     alignItems: "center",
@@ -168,7 +205,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.8,
   },
   buttonOpen: {
-    backgroundColor: "#4b8f8c", // A professional teal color
+    backgroundColor: "#4b8f8c",
   },
   buttonClose: {
     backgroundColor: "#4b8f8c",
@@ -233,7 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   dropDownText: {
-    color: "#333", // Darker text for better readability
+    color: "#333",
     fontSize: 16,
   },
 });
