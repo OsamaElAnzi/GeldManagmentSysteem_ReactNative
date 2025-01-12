@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   card: {
     width: 320,
     height: 120,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#415d43",
     padding: 25,
     borderRadius: 12,
     elevation: 6,
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 22,
     fontWeight: "600",
-    color: "#2f3c53",
+    color: "#a1cca5",
   },
 });
