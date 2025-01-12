@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Animated,
   StyleSheet,
   Text,
   Pressable,
@@ -78,24 +77,16 @@ function MTV() {
                 <View style={styles.radioButton}>
                   <RadioButton
                     value="INKOMEN"
-                    status={
-                      typeTransactie === "INKOMEN" ? "checked" : "unchecked"
-                    }
-                    onPress={() => {
-                      onChangeTypeTransactie("INKOMEN");
-                    }}
+                    status={typeTransactie === "INKOMEN" ? "checked" : "unchecked"}
+                    onPress={() => onChangeTypeTransactie("INKOMEN")}
                   />
                   <Text style={styles.radioLabel}>INKOMEN</Text>
                 </View>
                 <View style={styles.radioButton}>
                   <RadioButton
                     value="UITGAVEN"
-                    status={
-                      typeTransactie === "UITGAVEN" ? "checked" : "unchecked"
-                    }
-                    onPress={() => {
-                      onChangeTypeTransactie("UITGAVEN");
-                    }}
+                    status={typeTransactie === "UITGAVEN" ? "checked" : "unchecked"}
+                    onPress={() => onChangeTypeTransactie("UITGAVEN")}
                   />
                   <Text style={styles.radioLabel}>UITGAVEN</Text>
                 </View>
@@ -155,8 +146,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#0d1b2a",
-    borderRadius: 20,
+    backgroundColor: "#2f3c53", // Deep blue-gray for a professional feel
+    borderRadius: 15,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
@@ -167,41 +158,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: Dimensions.get("window").width * 0.9,
+    width: Dimensions.get("window").width * 0.85,
   },
   button: {
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 8,
+    padding: 12,
     margin: 10,
-    elevation: 2,
+    elevation: 3,
     width: Dimensions.get("window").width * 0.8,
   },
   buttonOpen: {
-    backgroundColor: "#415a77",
+    backgroundColor: "#4b8f8c", // A professional teal color
   },
   buttonClose: {
-    backgroundColor: "#415a77",
+    backgroundColor: "#4b8f8c",
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+    fontSize: 16,
   },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
     color: "#fff",
-    fontSize: 18,
+    fontSize: 20,
   },
   input: {
-    height: 40,
+    height: 45,
     margin: 12,
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 10,
     backgroundColor: "#fff",
-    padding: 10,
+    paddingHorizontal: 10,
     width: Dimensions.get("window").width * 0.8,
+    fontSize: 16,
   },
   column: {
     flexDirection: "column",
@@ -226,24 +219,21 @@ const styles = StyleSheet.create({
   },
   dropDown: {
     backgroundColor: "#fff",
-    borderRadius: 5,
-    borderColor: "#ccc",
-    height: 40,
+    borderRadius: 8,
+    borderColor: "#ddd",
+    height: 45,
     marginBottom: 15,
     paddingHorizontal: 10,
   },
-
   dropDownContainer: {
-    borderRadius: 5,
+    borderRadius: 8,
   },
-
   dropDownPlaceholder: {
     color: "#9ca3af",
     fontSize: 16,
   },
-
   dropDownText: {
-    color: "#000",
+    color: "#333", // Darker text for better readability
     fontSize: 16,
   },
 });
