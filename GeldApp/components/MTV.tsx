@@ -1,30 +1,138 @@
 import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  Modal,
+  TextInput,
+  Dimensions,
+  Alert,
+} from "react-native";
+import { RadioButton } from "react-native-paper";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+
 function MTV() {
-const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [beschrijving, onChangeBeschrijfing] = useState("");
+  const [bedrag, onChangeBedrag] = useState("");
+  const [typeTransactie, onChangeTypeTransactie] = useState("");
+  const [typeBiljet, onChangeTypeBiljet] = useState("");
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: "5 EUR", value: "5" },
+    { label: "10 EUR", value: "10" },
+    { label: "20 EUR", value: "20" },
+    { label: "50 EUR", value: "50" },
+    { label: "100 EUR", value: "100" },
+    { label: "200 EUR", value: "200" },
+    { label: "500 EUR", value: "500" },
+  ]);
+  const resetForm = () => {
+    onChangeBedrag("");
+    onChangeBeschrijfing("");
+    onChangeTypeTransactie("");
+  };
+
+  const handleAddTransaction = () => {
+    if (!bedrag || !typeTransactie || !beschrijving) {
+      Alert.alert("Fout", "Vul alle velden in!");
+      return;
+    }
+    console.log({ bedrag, typeTransactie, beschrijving });
+    resetForm();
+    setModalVisible(false);
+  };
+
+  const handleCloseModal = () => {
+    resetForm();
+    setModalVisible(false);
+  };
+
+  const { width } = Dimensions.get("window");
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
+          onRequestClose={handleCloseModal}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
+              <Text style={styles.modalText}>
+                Voeg hier je transactie aan toe!
+              </Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChangeBedrag}
+                placeholder="Bedrag"
+                keyboardType="numeric"
+                value={bedrag}
+              />
+              <View style={styles.radioGroup}>
+                <View style={styles.radioButton}>
+                  <RadioButton
+                    value="INKOMEN"
+                    status={
+                      typeTransactie === "INKOMEN" ? "checked" : "unchecked"
+                    }
+                    onPress={() => {
+                      onChangeTypeTransactie("INKOMEN");
+                    }}
+                  />
+                  <Text style={styles.radioLabel}>INKOMEN</Text>
+                </View>
+                <View style={styles.radioButton}>
+                  <RadioButton
+                    value="UITGAVEN"
+                    status={
+                      typeTransactie === "UITGAVEN" ? "checked" : "unchecked"
+                    }
+                    onPress={() => {
+                      onChangeTypeTransactie("UITGAVEN");
+                    }}
+                  />
+                  <Text style={styles.radioLabel}>UITGAVEN</Text>
+                </View>
+              </View>
+              <DropDownPicker
+                open={open}
+                value={typeBiljet}
+                items={items}
+                setOpen={setOpen}
+                setValue={onChangeTypeBiljet}
+                setItems={setItems}
+                placeholder="Selecteer een type biljet"
+                style={styles.dropDown}
+                dropDownContainerStyle={styles.dropDownContainer}
+                placeholderStyle={styles.dropDownPlaceholder}
+                textStyle={styles.dropDownText}
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={onChangeBeschrijfing}
+                placeholder="Beschrijving"
+                value={beschrijving}
+              />
+              <View style={styles.column}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={handleAddTransaction}
+                >
+                  <Text style={styles.textStyle}>Voeg toe</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={handleCloseModal}
+                >
+                  <Text style={styles.textStyle}>Sluit</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </Modal>
@@ -32,12 +140,13 @@ const [modalVisible, setModalVisible] = useState(false);
           style={[styles.button, styles.buttonOpen]}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.textStyle}>Show Modal</Text>
+          <Text style={styles.textStyle}>Voeg transactie toe!</Text>
         </Pressable>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -46,7 +155,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#0d1b2a",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -58,17 +167,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: Dimensions.get("window").width * 0.9,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 10,
+    margin: 10,
     elevation: 2,
+    width: Dimensions.get("window").width * 0.8,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "#415a77",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#415a77",
   },
   textStyle: {
     color: "white",
@@ -78,6 +190,61 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    color: "#fff",
+    fontSize: 18,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    padding: 10,
+    width: Dimensions.get("window").width * 0.8,
+  },
+  column: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    width: Dimensions.get("window").width * 0.8,
+  },
+  radioButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  radioLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: "#fff",
+  },
+  dropDown: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    borderColor: "#ccc",
+    height: 40,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+
+  dropDownContainer: {
+    borderRadius: 5,
+  },
+
+  dropDownPlaceholder: {
+    color: "#9ca3af",
+    fontSize: 16,
+  },
+
+  dropDownText: {
+    color: "#000",
+    fontSize: 16,
   },
 });
 
