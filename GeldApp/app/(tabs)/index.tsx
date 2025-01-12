@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Vermogen from "@/components/Vermogen";
 import NogTeGaan from "@/components/NogTeGaan";
 import Spaardoel from "@/components/Spaardoel";
+import MTV from "@/components/MTV";
 
 function Index() {
   return (
@@ -13,6 +14,7 @@ function Index() {
         <Vermogen />
         <NogTeGaan />
         <Spaardoel />
+        <MTV />
       </SafeAreaView>
     </SafeAreaProvider>
   );
