@@ -36,7 +36,10 @@ function TransactieLijst() {
         }
         renderItem={({ item }) => (
           <View style={styles.transactionItem}>
+            <View style={styles.row}>
             <Text style={styles.description}>{item.beschrijving}</Text>
+            <Text style={styles.description}>{item.typeTransactie}</Text>
+            </View>
             <Text style={styles.bedrag}>
               €
               {typeof item.bedrag === "number" && !isNaN(item.bedrag)
@@ -72,6 +75,12 @@ const styles = StyleSheet.create({
   bedrag: {
     fontSize: 14,
     color: "green",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+    marginHorizontal: 10
   },
 });
 

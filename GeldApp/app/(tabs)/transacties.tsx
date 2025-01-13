@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import TransactieLijst from '@/components/TransactieLijst';
 
 const Transacties = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Transacties</Text>
+            <TransactieLijst />
         </View>
     );
 };
@@ -13,8 +14,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#25292e',
     },
     text: {
         fontSize: 20,
