@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Saldo from "@/components/Saldo";
 import MTV from "@/components/MTV";
 import Status from "@/components/Status";
+import TransactieRecent from "@/components/TransactieRecent";
 
 
 function Index() {
@@ -14,6 +15,7 @@ function Index() {
         <Saldo />
         <Status />
         <MTV />
+        <TransactieRecent />
       </SafeAreaView>
     </SafeAreaProvider>
   );

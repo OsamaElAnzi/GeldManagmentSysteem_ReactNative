@@ -139,8 +139,8 @@ const MTV = () => {
             </View>
           </View>
         </Modal>
-        <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
-          <Text style={styles.buttonText}><AntDesign name="pluscircleo" size={24} color="black" /></Text>
+        <Pressable style={styles.button2} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText1}><AntDesign name="plus" size={24} color="black" /></Text>
         </Pressable>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -224,6 +224,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     opacity: 0.9,
   },
+  button2: {
+    backgroundColor: "#2980b9",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignItems: "center",
+    opacity: 0.9,
+  },
   buttonSecondary: {
     backgroundColor: "#757575",
     paddingVertical: 12,
@@ -238,6 +246,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  buttonText1: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 
