@@ -1,19 +1,18 @@
 import React from "react";
-import { StyleSheet, SafeAreaView, Text } from "react-native";
-
+import { StyleSheet, SafeAreaView } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Vermogen from "@/components/Vermogen";
-import NogTeGaan from "@/components/NogTeGaan";
-import Spaardoel from "@/components/Spaardoel";
+
+import Saldo from "@/components/Saldo";
 import MTV from "@/components/MTV";
+import Status from "@/components/Status";
+
 
 function Index() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Vermogen />
-        <NogTeGaan />
-        <Spaardoel />
+        <Saldo />
+        <Status />
         <MTV />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -27,13 +26,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#25292e",
     padding: 24,
-    alignItems: "center",
-  },
-  container2: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 24,
-    alignItems: "center",
-    marginTop: 20,
+
   },
 });

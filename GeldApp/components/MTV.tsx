@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,15 +6,15 @@ import {
   View,
   Modal,
   TextInput,
-  Dimensions,
   Alert,
+  Dimensions,
 } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RadioButton } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 
-function MTV() {
+const MTV = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [beschrijving, onChangeBeschrijfing] = useState("");
   const [bedrag, onChangeBedrag] = useState("");
@@ -39,42 +39,51 @@ function MTV() {
   };
 
   const handleAddTransaction = async () => {
+    console.log("Adding transaction...");
+
     if (!bedrag || !typeTransactie || !beschrijving) {
       Alert.alert("Fout", "Vul alle velden in!");
       return;
     }
 
+    // Validate that the amount is a positive number
+    const parsedBedrag = parseFloat(bedrag);
+    if (isNaN(parsedBedrag) || parsedBedrag <= 0) {
+      Alert.alert("Fout", "Het bedrag moet een positief getal zijn!");
+      return;
+    }
+
     const transaction = {
-      bedrag,
+      bedrag: parsedBedrag, // Ensure this is a number
       typeTransactie,
       beschrijving,
       typeBiljet,
     };
 
     try {
-      // Get any existing transactions from AsyncStorage
       const existingTransactions = await AsyncStorage.getItem("@transactie");
+      console.log("Existing Transactions:", existingTransactions);
 
-      // If there are existing transactions, parse them into an array, otherwise use an empty array
       const transactions = existingTransactions
         ? JSON.parse(existingTransactions)
         : [];
+      console.log("Parsed Transactions:", transactions);
 
-      // Add the new transaction to the array
       transactions.push(transaction);
+      console.log("New Transactions List:", transactions);
 
-      // Save the updated array back to AsyncStorage
       await AsyncStorage.setItem("@transactie", JSON.stringify(transactions));
+      console.log("Transaction saved!");
 
       resetForm();
       setModalVisible(false);
       Alert.alert("Succes", "Transactie succesvol opgeslagen!");
     } catch (error) {
+      console.error("Error saving to AsyncStorage:", error);
       Alert.alert(
         "Fout",
         "Er is iets mis gegaan met het opslaan van de transactie!"
       );
-      console.error("Error saving to AsyncStorage:", error);
     }
   };
 
@@ -82,8 +91,6 @@ function MTV() {
     resetForm();
     setModalVisible(false);
   };
-
-  const { width } = Dimensions.get("window");
 
   return (
     <SafeAreaProvider>
@@ -107,26 +114,22 @@ function MTV() {
                 value={bedrag}
               />
               <View style={styles.radioGroup}>
-                <View style={styles.radioButton}>
-                  <RadioButton
-                    value="INKOMEN"
-                    status={
-                      typeTransactie === "INKOMEN" ? "checked" : "unchecked"
-                    }
-                    onPress={() => onChangeTypeTransactie("INKOMEN")}
-                  />
-                  <Text style={styles.radioLabel}>INKOMEN</Text>
-                </View>
-                <View style={styles.radioButton}>
-                  <RadioButton
-                    value="UITGAVEN"
-                    status={
-                      typeTransactie === "UITGAVEN" ? "checked" : "unchecked"
-                    }
-                    onPress={() => onChangeTypeTransactie("UITGAVEN")}
-                  />
-                  <Text style={styles.radioLabel}>UITGAVEN</Text>
-                </View>
+                <RadioButton
+                  value="INKOMEN"
+                  status={
+                    typeTransactie === "INKOMEN" ? "checked" : "unchecked"
+                  }
+                  onPress={() => onChangeTypeTransactie("INKOMEN")}
+                />
+                <Text>INKOMEN</Text>
+                <RadioButton
+                  value="UITGAVEN"
+                  status={
+                    typeTransactie === "UITGAVEN" ? "checked" : "unchecked"
+                  }
+                  onPress={() => onChangeTypeTransactie("UITGAVEN")}
+                />
+                <Text>UITGAVEN</Text>
               </View>
               <DropDownPicker
                 open={open}
@@ -136,10 +139,6 @@ function MTV() {
                 setValue={onChangeTypeBiljet}
                 setItems={setItems}
                 placeholder="Selecteer een type biljet"
-                style={styles.dropDown}
-                dropDownContainerStyle={styles.dropDownContainer}
-                placeholderStyle={styles.dropDownPlaceholder}
-                textStyle={styles.dropDownText}
               />
               <TextInput
                 style={styles.input}
@@ -147,131 +146,45 @@ function MTV() {
                 placeholder="Beschrijving"
                 value={beschrijving}
               />
-              <View style={styles.column}>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={handleAddTransaction}
-                >
-                  <Text style={styles.textStyle}>Voeg toe</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={handleCloseModal}
-                >
-                  <Text style={styles.textStyle}>Sluit</Text>
-                </Pressable>
-              </View>
+              <Pressable style={styles.button} onPress={handleAddTransaction}>
+                <Text style={styles.textStyle}>Voeg toe</Text>
+              </Pressable>
+              <Pressable style={styles.button} onPress={handleCloseModal}>
+                <Text style={styles.textStyle}>Sluit</Text>
+              </Pressable>
             </View>
           </View>
         </Modal>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
-        >
+        <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.textStyle}>Voeg transactie toe!</Text>
         </Pressable>
       </SafeAreaView>
     </SafeAreaProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "#2f3c53",
-    borderRadius: 15,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: Dimensions.get("window").width * 0.85,
-  },
+  centeredView: { flex: 1, justifyContent: "center", alignItems: "center" },
+  modalView: { backgroundColor: "#2f3c53", padding: 35, borderRadius: 15 },
   button: {
-    borderRadius: 8,
+    backgroundColor: "#4b8f8c",
     padding: 12,
     margin: 10,
-    elevation: 3,
-    width: Dimensions.get("window").width * 0.8,
+    borderRadius: 8,
   },
-  buttonOpen: {
-    backgroundColor: "#4b8f8c",
-  },
-  buttonClose: {
-    backgroundColor: "#4b8f8c",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 16,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 20,
-  },
+  textStyle: { color: "white", fontWeight: "bold", textAlign: "center" },
   input: {
     height: 45,
     margin: 12,
     borderWidth: 1,
     borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: "#fff",
     paddingHorizontal: 10,
-    width: Dimensions.get("window").width * 0.8,
     fontSize: 16,
-  },
-  column: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    marginBottom: 10,
   },
   radioGroup: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 20,
-    width: Dimensions.get("window").width * 0.8,
-  },
-  radioButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  radioLabel: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: "#fff",
-  },
-  dropDown: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    borderColor: "#ddd",
-    height: 45,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-  },
-  dropDownContainer: {
-    borderRadius: 8,
-  },
-  dropDownPlaceholder: {
-    color: "#9ca3af",
-    fontSize: 16,
-  },
-  dropDownText: {
-    color: "#333",
-    fontSize: 16,
   },
 });
 
