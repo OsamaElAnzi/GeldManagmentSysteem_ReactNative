@@ -38,6 +38,7 @@ function TransactieLijst() {
           <View style={styles.transactionItem}>
             <View style={styles.row}>
             <Text style={styles.description}>{item.beschrijving}</Text>
+            <Text style={styles.description}>{item.typeBiljet} EUR</Text>
             <Text style={styles.description}>{item.typeTransactie}</Text>
             </View>
             <Text style={styles.bedrag}>
