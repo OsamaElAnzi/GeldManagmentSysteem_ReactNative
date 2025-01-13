@@ -1,26 +1,25 @@
-import {View, Text, StyleSheet} from 'react-native'
-import TransactieLijst from "@/components/TransactieLijst";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
+const Transacties = () => {
+    return (
+        <View style={styles.container}>
+            <Text style={styles.text}>Transacties</Text>
+        </View>
+    );
+};
 
-function transacties() {
-  return (
-    <View
-        style={styles.container}
-        >
-      <TransactieLijst />
-    </View>
-  )
-}
-
-export default transacties
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#25292e',
+        justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#fff',
     },
-    test: {
-        color: '#fff',
-        fontSize: 24
-    }
-})
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+});
+
+export default Transacties;

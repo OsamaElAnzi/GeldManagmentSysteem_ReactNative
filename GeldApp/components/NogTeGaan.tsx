@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 function NogTeGaan() {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Spaardoel</Text>
+      <Text style={styles.cardTitle}>Nog te gaan</Text>
       <Text style={styles.cardText}>1</Text>
     </View>
   );
