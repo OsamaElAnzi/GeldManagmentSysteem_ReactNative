@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 
 const MTV = () => {
@@ -111,7 +112,6 @@ const MTV = () => {
                 placeholder="Selecteer type transactie"
                 style={styles.dropdown1}
                 textStyle={styles.dropdownText}
-                dropDownStyle={styles.dropdownStyle}
               />
               <DropDownPicker
                 open={open}
@@ -123,7 +123,6 @@ const MTV = () => {
                 placeholder="Selecteer een biljet"
                 style={styles.dropdown}
                 textStyle={styles.dropdownText}
-                dropDownStyle={styles.dropdownStyle}
               />
               <TextInput
                 style={styles.input}
@@ -141,7 +140,7 @@ const MTV = () => {
           </View>
         </Modal>
         <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
-          <Text style={styles.buttonText}>Voeg transactie toe!</Text>
+          <Text style={styles.buttonText}><AntDesign name="pluscircleo" size={24} color="black" /></Text>
         </Pressable>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -153,7 +152,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
   },
   overlay: {
     flex: 1,
@@ -197,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     borderColor: "#ddd",
     borderRadius: 8,
-    zIndex: 1, // Ensure this dropdown appears above others
+    zIndex: 1,
   },
   dropdown: {
     width: "100%",
@@ -205,7 +203,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     borderColor: "#ddd",
     borderRadius: 8,
-    zIndex: 0, // Ensure this dropdown appears behind others
+    zIndex: 0,
   },
   dropdownText: {
     fontSize: 16,
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   button: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#2980b9",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 25,
