@@ -23,16 +23,18 @@ function Spaardoel() {
 
     return (
         <View style={styles.card}>
-            {spaardoel ? (
+            {spaardoel.length > 0 ? (
                 spaardoel.map((item: { name: string; amount: number }, index: number) => (
                     <View key={index} style={styles.goalContainer}>
                         <Text style={styles.goalTitle}>Spaardoel</Text>
-                        <Text style={styles.goalName}>{item.name}</Text>
+                        <Text style={styles.goalName}>
+                            {item.name ? item.name : "Voer je spaardoel in"}
+                        </Text>
                         <Text style={styles.goalAmount}>€ {item.amount.toFixed(2)}</Text>
                     </View>
                 ))
             ) : (
-                <Text style={styles.noGoalsText}>Geen spaardoelen gevonden.</Text>
+                <Text style={styles.noGoalsText}>Geen spaardoelen ingesteld</Text>
             )}
         </View>
     );

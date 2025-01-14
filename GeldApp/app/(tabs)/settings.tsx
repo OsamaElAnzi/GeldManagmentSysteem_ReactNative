@@ -1,13 +1,14 @@
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 
 import SpaarInstellen from '@/components/SpaarInstellen';
+import VermogenInstellen from '@/components/VermogenInstellen';
 
 function settings() {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <SpaarInstellen />
-        <SpaarInstellen />
+        <VermogenInstellen />
       </View>
     </View>
   );

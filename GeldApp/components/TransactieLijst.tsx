@@ -49,7 +49,7 @@ function TransactieLijst() {
             </Text>
           </View>
         )}
-        ListEmptyComponent={<Text>No transactions available.</Text>}
+        ListEmptyComponent={<Text style={styles.noTransaction}>Geen transacties gemaakt</Text>}
       />
     </View>
   );
@@ -83,6 +83,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginHorizontal: 10
   },
+  noTransaction: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
+    color: "#ccc"
+  }
 });
 
 export default TransactieLijst;
