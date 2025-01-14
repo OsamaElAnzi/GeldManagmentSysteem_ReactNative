@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   Dimensions,
+  DevSettings
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -71,6 +72,7 @@ const MTV = () => {
 
       resetForm();
       setModalVisible(false);
+      DevSettings.reload();
       Alert.alert("Succes", "Transactie succesvol opgeslagen!");
     } catch (error) {
       console.error("Error saving to AsyncStorage:", error);

@@ -1,24 +1,30 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
+
+import SpaarInstellen from '@/components/SpaarInstellen';
+
 function settings() {
   return (
-    <View
-    style={styles.container}
-    >
-        <Text style={styles.test}>Settings Screen</Text>
+    <View style={styles.container}>
+      <View style={styles.row}>
+        <SpaarInstellen />
+        <SpaarInstellen />
+      </View>
     </View>
-  )
+  );
 }
 
-export default settings
+export default settings;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#25292e',
-        alignItems: 'center',
-    },
-    test: {
-        color: '#fff',
-        fontSize: 24
-    }
-})
+  container: {
+    flex: 1,
+    backgroundColor: '#25292e',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '90%', // Breedte van de rij
+    marginVertical: 15, // Ruimte tussen rijen
+  },
+});
