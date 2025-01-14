@@ -26,8 +26,7 @@ function Spaardoel() {
             {spaardoel.length > 0 ? (
                 spaardoel.map((item: { name: string; amount: number }, index: number) => (
                     <View key={index} style={styles.goalContainer}>
-                        <Text style={styles.goalTitle}>Spaardoel</Text>
-                        <Text style={styles.goalName}>
+                        <Text style={styles.goalTitle}>
                             {item.name ? item.name : "Voer je spaardoel in"}
                         </Text>
                         <Text style={styles.goalAmount}>€ {item.amount.toFixed(2)}</Text>
@@ -44,7 +43,7 @@ export default Spaardoel;
 
 const styles = StyleSheet.create({
     card: {
-        width: "50%",
+        width: "48%",
         backgroundColor: "#2980b9",
         padding: 15,
         borderRadius: 10,

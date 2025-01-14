@@ -1,67 +1,96 @@
-import React from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+interface Transaction {
+  typeTransactie: "INKOMEN" | "UITGAVEN";
+  bedrag: number;
+}
+
 function NogTeGaan() {
-    const handleAddOrUpdateSpaardoel = async (goalId: string, goalName: string, goal: string) => {
-        if (!goalName || parseFloat(goal) <= 0) {
-            Alert.alert("Vul een geldige naam en bedrag in!");
-            return;
+  const [nogTeGaan, setNogTeGaan] = useState<{ name: string; amount: number }[]>([]);
+  const [spaardoel, setSpaardoel] = useState<{ name: string; amount: number }[]>([]);
+  const [saldo, setSaldo] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchTussenstand = async () => {
+      try {
+        const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
+        const existingTransactions = await AsyncStorage.getItem("@transactie");
+
+        console.log("Existing Transactions for saldo:", existingTransactions);
+
+        if (existingTransactions) {
+          const transactions = JSON.parse(existingTransactions);
+          const totalSaldo = transactions.reduce(
+            (acc: number, transaction: Transaction) => {
+              const bedrag = typeof transaction.bedrag === "number" ? transaction.bedrag : 0;
+              return transaction.typeTransactie === "INKOMEN"
+                ? acc + bedrag
+                : acc - bedrag;
+            },
+            0
+          );
+          setSaldo(totalSaldo);
+
+          console.log("Total Saldo:", totalSaldo);
         }
 
-        const spaardoelInfo = {
-            id: goalId || new Date().toISOString(),
-            name: goalName,
-            amount: parseFloat(goal),
-            date: new Date().toISOString(),
-        };
+        if (existingSpaardoel) {
+          const parsedSpaardoel = JSON.parse(existingSpaardoel);
+          setSpaardoel(parsedSpaardoel);
 
-        try {
-            const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
-            let spaardoel = existingSpaardoel ? JSON.parse(existingSpaardoel) : [];
-
-            const index = spaardoel.findIndex(
-                (item: {id: String, name: String, amount: number, date: String}) => item.id === spaardoelInfo.id
-            );
-
-            if (index !== -1) {
-                spaardoel[index] = spaardoelInfo;
-            } else {
-                spaardoel.push(spaardoelInfo);
-            }
-
-            await AsyncStorage.setItem("@spaardoel", JSON.stringify(spaardoel));
-            Alert.alert("Succes", "Spaardoel succesvol opgeslagen!");
-        } catch (error) {
-            console.error("Error saving to AsyncStorage:", error);
-            Alert.alert("Fout", "Er is iets mis gegaan met het opslaan van het spaardoel!");
+          const remainingAmount = parseFloat(parsedSpaardoel[0]?.amount || 0) - saldo;
+          setNogTeGaan([{ name: "Nog te gaan", amount: remainingAmount }]);
         }
+      } catch (error) {
+        console.error("Error fetching spaardoel:", error);
+      }
     };
 
-    return (
-        <View style={styles.card}>
-            <Text style={styles.cardTitle}>Nog te gaan</Text>
-            <Text style={styles.cardText}>{handleAddOrUpdateSpaardoel()}</Text>
-        </View>
-    );
+    fetchTussenstand();
+  }, [saldo]);
+
+  return (
+    <View style={styles.card}>
+        {nogTeGaan.map((item, index) => (
+          <View
+          style={styles.goalContainer}
+          key={index}>
+            <Text style={styles.goalTitle}>{item.name}</Text>
+            <Text style={styles.goalAmount}>€ {item.amount.toFixed(2)}</Text>
+          </View>
+        ))}
+    </View>
+  );
 }
 
 export default NogTeGaan;
 
 const styles = StyleSheet.create({
-    card: {
-        width: "45%",
-        backgroundColor: "#2980b9",
-        padding: 10,
-        borderRadius: 10,
-    },
-    cardTitle: {
-        fontWeight: "bold",
-        color: "#ffff",
-    },
-    cardText: {
-        fontSize: 22,
-        fontWeight: "bold",
-        color: "#ffff",
-    },
+  card: {
+    width: "48%",
+    backgroundColor: "#2980b9",
+    padding: 15,
+    borderRadius: 10,
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  goalContainer: {
+    marginBottom: 5,
+  },
+  goalTitle: {
+    fontSize: 13,
+    color: "#fff",
+  },
+  goalAmount: {
+    fontSize: 20,
+    color: "#f1c40f",
+  },
+  noGoalsText: {
+    fontSize: 14,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 5,
+  },
 });
