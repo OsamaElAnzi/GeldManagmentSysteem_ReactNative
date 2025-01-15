@@ -6,6 +6,7 @@ import Saldo from "@/components/Saldo";
 import MTV from "@/components/MTV";
 import Status from "@/components/Status";
 import TransactieRecent from "@/components/TransactieRecent";
+import ChartComponent from "@/components/ChartComponent";
 
 
 function Index() {
@@ -13,6 +14,7 @@ function Index() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Saldo />
+        <ChartComponent />
         <Status />
         <MTV />
         <TransactieRecent />

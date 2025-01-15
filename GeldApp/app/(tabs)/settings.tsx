@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '90%', // Breedte van de rij
-    marginVertical: 15, // Ruimte tussen rijen
+    width: '90%',
+    marginVertical: 15,
   },
 });
