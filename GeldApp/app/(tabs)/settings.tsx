@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, Pressable } from 'react-native';
 
 import SpaarInstellen from '@/components/SpaarInstellen';
 import VermogenInstellen from '@/components/VermogenInstellen';
+import Biljetten from '@/components/Biljetten';
 
 function settings() {
   return (
@@ -9,6 +10,9 @@ function settings() {
       <View style={styles.row}>
         <SpaarInstellen />
         <VermogenInstellen />
+      </View>
+      <View style={styles.row}>
+        <Biljetten />
       </View>
     </View>
   );
