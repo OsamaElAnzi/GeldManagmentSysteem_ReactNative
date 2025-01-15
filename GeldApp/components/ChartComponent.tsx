@@ -1,71 +1,71 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet } from 'react-native';
+import Svg, { Circle, G } from 'react-native-svg';
 
 const ChartComponent = () => {
-  const [percentage, setPercentage] = useState(0);
-  const screenWidth = Dimensions.get('window').width;
+    const [percentage, setPercentage] = useState(75);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedValue = await AsyncStorage.getItem('@transactie');
-        if (storedValue) {
-          setPercentage(Number(storedValue));
-        }
-      } catch (error) {
-        console.log('Error retrieving data', error);
-      }
-    };
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchPercentage = async () => {
+            try {
+            } catch (error) {
+                console.log('Error retrieving percentage:', error);
+            }
+        };
+        fetchPercentage();
+    }, []);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Gauge Chart</Text>
-      
-      <AnimatedCircularProgress
-        size={250}
-        width={20}
-        fill={percentage} // Dynamically set the fill percentage
-        tintColor="#00e0ff"
-        backgroundColor="#3d5875"
-        rotation={0}
-        lineCap="round"
-        style={styles.gauge}
-      >
-        {() => (
-          <Text style={styles.percentageText}>
-            {percentage}%
-          </Text>
-        )}
-      </AnimatedCircularProgress>
-    </View>
-  );
+    const radius = 60;
+    const strokeWidth = 10;
+    const diameter = radius * 2;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (circumference * percentage) / 100;
+
+    return (
+        <View style={styles.container}>
+            <Svg width={diameter} height={diameter}>
+                <G rotation="-90" origin={`${radius}, ${radius}`}>
+                    <Circle
+                        cx={radius}
+                        cy={radius}
+                        r={radius - strokeWidth / 2}
+                        stroke="#3d5875"
+                        strokeWidth={strokeWidth}
+                        fill="none"
+                        strokeOpacity={0.3}
+                    />
+                    <Circle
+                        cx={radius}
+                        cy={radius}
+                        r={radius - strokeWidth / 2}
+                        stroke="#00e0ff"
+                        strokeWidth={strokeWidth}
+                        fill="none"
+                        strokeDasharray={`${circumference}`}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                    />
+                </G>
+            </Svg>
+            <Text style={styles.percentageText}>{percentage}%</Text>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#25292e',
-  },
-  title: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: '#fff',
-  },
-  gauge: {
-    marginTop: 10,
-  },
-  percentageText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#25292e',
+        padding: 20,
+    },
+    percentageText: {
+        position: 'absolute',
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
 });
 
 export default ChartComponent;
