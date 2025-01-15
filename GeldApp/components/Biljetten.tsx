@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Pressable,
   Text,
   StyleSheet,
   Modal,
-  Alert,
-  TextInput,
   FlatList,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,26 +16,69 @@ interface Transaction {
   typeTransactie: string;
   typeBiljet: number;
 }
+
 function Biljetten() {
   const [modalVisible, setModalVisible] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [soortBiljetten, setSoortBiljetten] = useState([
+    { id: "1", label: "5 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "2", label: "10 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "3", label: "20 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "4", label: "50 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "5", label: "100 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "6", label: "200 EUR", aantalBiljetten: 0, bedrag: 0 },
+    { id: "7", label: "500 EUR", aantalBiljetten: 0, bedrag: 0 },
+  ]);
 
-  const soortBiljetten = [
-    { id: "1", label: "5 EUR", aantalBiljetten: 0,bedrag:  0},
-    { id: "2", label: "10 EUR", aantalBiljetten: 0,bedrag: 0 },
-    { id: "3", label: "20 EUR", aantalBiljetten: 0,bedrag: 0 },
-    { id: "4", label: "50 EUR", aantalBiljetten: 0,bedrag: 0 },
-    { id: "5", label: "100 EUR", aantalBiljetten: 0,bedrag: 0 },
-    { id: "6", label: "200 EUR", aantalBiljetten: 0,bedrag: 0 },
-    { id: "7", label: "500 EUR", aantalBiljetten: 0,bedrag: 0 },
-  ];
-  const TableRow = ({ item }: { item: { id: string; label: string; aantalBiljetten: number,bedrag: number } }) => (
+  useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const existingTransactions = await AsyncStorage.getItem("@transactie");
+        if (existingTransactions !== null) {
+          const parsedTransactions: Transaction[] = JSON.parse(existingTransactions);
+          setTransactions(parsedTransactions);
+          calculateBiljetten(parsedTransactions);
+        }
+      } catch (err) {
+        console.log("Error retrieving data from AsyncStorage", err);
+      }
+    }
+    fetchTransactions();
+  }, []);
+
+  const calculateBiljetten = (transactions: Transaction[]) => {
+    const updatedBiljetten = soortBiljetten.map((biljet) => ({
+      ...biljet,
+      aantalBiljetten: 0,
+      bedrag: 0,
+    }));
+
+    transactions.forEach((transaction) => {
+      const biljetIndex = updatedBiljetten.findIndex(
+        (biljet) => biljet.label === `${transaction.typeBiljet} EUR`
+      );
+
+      if (biljetIndex !== -1) {
+        updatedBiljetten[biljetIndex].aantalBiljetten += 1;
+        updatedBiljetten[biljetIndex].bedrag += transaction.bedrag;
+      }
+    });
+
+    setSoortBiljetten(updatedBiljetten);
+  };
+
+  const TableRow = ({
+    item,
+  }: {
+    item: { id: string; label: string; aantalBiljetten: number; bedrag: number };
+  }) => (
     <View style={styles.tableRow}>
       <Text style={styles.rowText}>{item.label}</Text>
       <Text style={styles.rowText}>{item.aantalBiljetten}</Text>
       <Text style={styles.rowText}>{item.bedrag} EUR</Text>
     </View>
   );
+
   const TableHeader = () => (
     <View style={styles.tableHeader}>
       <Text style={styles.headerText}>Soort biljet</Text>
@@ -45,6 +86,7 @@ function Biljetten() {
       <Text style={styles.headerText}>Totale bedrag</Text>
     </View>
   );
+
   return (
     <>
       <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
@@ -58,7 +100,7 @@ function Biljetten() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Biljetten Overzicht</Text>
+            <Text style={styles.modalTitle}>Biljetten  Overzicht</Text>
             <TableHeader />
             <FlatList
               data={soortBiljetten}
@@ -79,6 +121,7 @@ function Biljetten() {
 }
 
 export default Biljetten;
+
 
 const styles = StyleSheet.create({
   card: {
