@@ -90,7 +90,7 @@ function Biljetten() {
   return (
     <>
       <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
-        <Text style={styles.cardText}>Biljetten Overzicht</Text>
+        <Text style={styles.cardText}>Biljetten  Overzicht</Text>
       </Pressable>
       <Modal
         animationType="slide"
@@ -100,7 +100,7 @@ function Biljetten() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Biljetten  Overzicht</Text>
+            <Text style={styles.modalTitle}>Biljetten Overzicht</Text>
             <TableHeader />
             <FlatList
               data={soortBiljetten}

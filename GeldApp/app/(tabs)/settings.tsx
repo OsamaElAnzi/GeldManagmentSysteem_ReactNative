@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Pressable } from 'react-native';
 import SpaarInstellen from '@/components/SpaarInstellen';
 import VermogenInstellen from '@/components/VermogenInstellen';
 import Biljetten from '@/components/Biljetten';
+import Contact from '@/components/Contact';
 
 function settings() {
   return (
@@ -13,6 +14,7 @@ function settings() {
       </View>
       <View style={styles.row}>
         <Biljetten />
+        <Contact />
       </View>
     </View>
   );
