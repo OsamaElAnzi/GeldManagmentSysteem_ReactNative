@@ -20,7 +20,7 @@ interface Transaction {
 
 function Biljetten() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [, setTransactions] = useState<Transaction[]>([]);
   const [soortBiljetten, setSoortBiljetten] = useState([
     { id: "1", label: "5 EUR", aantalBiljetten: 0, bedrag: 0 },
     { id: "2", label: "10 EUR", aantalBiljetten: 0, bedrag: 0 },
@@ -60,7 +60,7 @@ function Biljetten() {
       );
 
       if (biljetIndex !== -1) {
-        updatedBiljetten[biljetIndex].aantalBiljetten += 1;
+        updatedBiljetten[biljetIndex].aantalBiljetten += transaction.bedrag / transaction.typeBiljet;
         updatedBiljetten[biljetIndex].bedrag += transaction.bedrag;
       }
     });
