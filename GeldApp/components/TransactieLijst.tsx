@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Text, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native";
+import { View, FlatList, Text, StyleSheet, Pressable, Modal, TouchableOpacity, TextInput, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Transaction {
@@ -15,6 +15,10 @@ function TransactieLijst() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [editBeschrijving, setEditBeschrijving] = useState("");
+  const [editBedrag, setEditBedrag] = useState("");
+  const [editTypeTransactie, setEditTypeTransactie] = useState("");
+  const [editTypeBiljet, setEditTypeBiljet] = useState("");
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -30,13 +34,54 @@ function TransactieLijst() {
     fetchTransactions();
   }, []);
 
+  const openModal = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setEditBeschrijving(transaction.beschrijving);
+    setEditBedrag(transaction.bedrag.toString());
+    setModalVisible(true);
+  };
+
+  const updateTransaction = async () => {
+    if (!selectedTransaction) return;
+
+    const updatedTransactions = transactions.map((transaction) =>
+      transaction.id === selectedTransaction.id
+        ? { ...transaction, beschrijving: editBeschrijving, bedrag: parseFloat(editBedrag) || 0 }
+        : transaction
+    );
+
+    try {
+      await AsyncStorage.setItem("@transactie", JSON.stringify(updatedTransactions));
+      setTransactions(updatedTransactions);
+      setModalVisible(false);
+      Alert.alert("Succes", "Transactie bijgewerkt!");
+    } catch (error) {
+      console.error("Fout bij opslaan:", error);
+    }
+  };
+
+  const deleteTransaction = async () => {
+    if (!selectedTransaction) return;
+
+    const filteredTransactions = transactions.filter((transaction) => transaction.id !== selectedTransaction.id);
+
+    try {
+      await AsyncStorage.setItem("@transactie", JSON.stringify(filteredTransactions));
+      setTransactions(filteredTransactions);
+      setModalVisible(false);
+      Alert.alert("Succes", "Transactie verwijderd!");
+    } catch (error) {
+      console.error("Fout bij verwijderen:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
         data={transactions}
-        keyExtractor={(item) => item.id || Math.random().toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable onPress={() => { setSelectedTransaction(item); setModalVisible(true); }}>
+          <Pressable onPress={() => openModal(item)}>
             <View style={styles.transactionItem}>
               <View style={styles.row}>
                 <Text style={styles.description}>{item.beschrijving}</Text>
@@ -44,8 +89,7 @@ function TransactieLijst() {
                 <Text style={styles.description}>{item.typeTransactie}</Text>
               </View>
               <Text style={[styles.amount, { color: item.typeTransactie === 'UITGAVEN' ? 'red' : 'green' }]}>
-                {item.typeTransactie === 'UITGAVEN' ? '-' : '+'}€
-                {typeof item.bedrag === "number" && !isNaN(item.bedrag) ? item.bedrag.toFixed(2) : "0.00"}
+                {item.typeTransactie === 'UITGAVEN' ? '-' : '+'}€{item.bedrag.toFixed(2)}
               </Text>
             </View>
           </Pressable>
@@ -53,20 +97,50 @@ function TransactieLijst() {
         ListEmptyComponent={<Text style={styles.noTransaction}>Geen transacties gemaakt</Text>}
       />
 
-      {/* Modal voor transactie details */}
+      {/* Modal voor Bewerken/Verwijderen */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             {selectedTransaction && (
               <>
                 <Text style={styles.modalTitle}>Transactie Details</Text>
-                <Text style={styles.modalText}>Beschrijving: {selectedTransaction.beschrijving}</Text>
-                <Text style={styles.modalText}>Bedrag: €{selectedTransaction.bedrag.toFixed(2)}</Text>
-                <Text style={styles.modalText}>Type Biljet: {selectedTransaction.typeBiljet} EUR</Text>
-                <Text style={styles.modalText}>Type Transactie: {selectedTransaction.typeTransactie}</Text>
-                <Text style={styles.modalText}>Datum: {selectedTransaction.datumTijd}</Text>
+                <TextInput
+                  style={styles.input}
+                  value={editBeschrijving}
+                  onChangeText={setEditBeschrijving}
+                  placeholder="Beschrijving"
+                />
+                <TextInput
+                  style={styles.input}
+                  value={editBedrag}
+                  onChangeText={setEditBedrag}
+                  keyboardType="numeric"
+                  placeholder="Bedrag"
+                />
+                <TextInput
+                style={styles.modalText}
+                value={editTypeBiljet}
+                onChangeText={setEditTypeBiljet}
+                placeholder="Type Biljet"
+                />
+                <TextInput
+                style={styles.modalText}
+                value={editTypeTransactie}
+                onChangeText={setEditTypeTransactie}
+                placeholder="Type Transactie"
+                />
+                <Text
+                style={styles.modalText}>Datum: {selectedTransaction.datumTijd}
+                </Text>
+
+                <TouchableOpacity style={styles.saveButton} onPress={updateTransaction}>
+                  <Text style={styles.buttonText}>Opslaan</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton} onPress={deleteTransaction}>
+                  <Text style={styles.buttonText}>Verwijderen</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                  <Text style={styles.closeButtonText}>Sluiten</Text>
+                  <Text style={styles.buttonText}>Sluiten</Text>
                 </TouchableOpacity>
               </>
             )}
@@ -90,7 +164,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3, // Voor Android
+    elevation: 3,
   },
   description: {
     fontSize: 16,
@@ -136,14 +210,40 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
-  closeButton: {
-    marginTop: 15,
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  input: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 5,
+    padding: 8,
+    fontSize: 16,
+    marginBottom: 10,
   },
-  closeButtonText: {
+  saveButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  closeButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
