@@ -33,7 +33,7 @@ function InfoOverzicht() {
 
             <View style={styles.infoContainer}>
               <Text style={styles.infoLabel}>E-mail:</Text>
-              <Text style={styles.infoText}>osamelanzi0@gmail.com</Text>
+              <Text style={styles.infoText}>osamaelanzi0@gmail.com</Text>
             </View>
 
             <View style={styles.infoContainer}>
