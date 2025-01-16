@@ -13,7 +13,7 @@ function InfoOverzicht() {
   return (
     <>
       <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
-        <Text style={styles.cardText}>Info Overzicht</Text>
+        <Text style={styles.cardText}>Contact</Text>
       </Pressable>
 
       <Modal
