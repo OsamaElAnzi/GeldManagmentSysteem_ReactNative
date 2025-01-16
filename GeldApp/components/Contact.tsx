@@ -38,7 +38,7 @@ function InfoOverzicht() {
 
             <View style={styles.infoContainer}>
               <Text style={styles.infoLabel}>Telefoonnummer:</Text>
-              <Text style={styles.infoText}>0685384810</Text>
+              <Text style={styles.infoText}>+31 6 85384810</Text>
             </View>
 
             <View style={styles.infoContainer}>
