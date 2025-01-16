@@ -5,6 +5,8 @@ import VermogenInstellen from '@/components/VermogenInstellen';
 import Biljetten from '@/components/Biljetten';
 import Contact from '@/components/Contact';
 
+//quote
+import Quote from '@/components/Quote';
 function settings() {
   return (
     <View style={styles.container}>
@@ -15,6 +17,9 @@ function settings() {
       <View style={styles.row}>
         <Biljetten />
         <Contact />
+      </View>
+      <View style={styles.row}>
+        <Quote />
       </View>
     </View>
   );

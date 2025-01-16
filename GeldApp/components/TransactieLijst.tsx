@@ -38,10 +38,11 @@ function TransactieLijst() {
           <View style={styles.transactionItem}>
             <View style={styles.row}>
             <Text style={styles.description}>{item.beschrijving}</Text>
-            <Text style={styles.description}>{item.typeBiljet} EUR</Text>
+            <Text style={styles.description}>{item.typeBiljet } EUR</Text>
             <Text style={styles.description}>{item.typeTransactie}</Text>
             </View>
-            <Text style={styles.bedrag}>
+            <Text style={{ color: item.typeTransactie === 'UITGAVEN' ? 'red' : 'green' }}>
+              {item.typeTransactie === 'UITGAVEN' ? '-' : '+'}
               €
               {typeof item.bedrag === "number" && !isNaN(item.bedrag)
                 ? item.bedrag.toFixed(2)
@@ -72,10 +73,6 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     fontWeight: "bold",
-  },
-  bedrag: {
-    fontSize: 14,
-    color: "green",
   },
   row: {
     flexDirection: "row",
