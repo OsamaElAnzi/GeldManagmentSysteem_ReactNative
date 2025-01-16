@@ -7,7 +7,6 @@ import {
   Modal,
   TextInput,
   Alert,
-  Dimensions,
   DevSettings
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -37,6 +36,18 @@ const MTV = () => {
     { label: "Uitgaven", value: "UITGAVEN" },
   ]);
 
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toLocaleDateString("nl-NL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }) + " - " + now.toLocaleTimeString("nl-NL", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const resetForm = () => {
     onChangeBedrag("");
     onChangeBeschrijfing("");
@@ -61,6 +72,8 @@ const MTV = () => {
       typeTransactie,
       beschrijving,
       typeBiljet,
+      datumTijd: getCurrentDateTime(), // Hier wordt de datum en tijd opgeslagen
+      id: new Date().toISOString(),
     };
 
     try {
@@ -97,6 +110,7 @@ const MTV = () => {
           <View style={styles.overlay}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Voeg een nieuwe transactie toe</Text>
+              <Text style={styles.dateText}>Datum en tijd: {getCurrentDateTime()}</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={onChangeBedrag}
@@ -191,6 +205,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#f9f9f9",
   },
+  dateText: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 15,
+  },
   dropdown1: {
     width: "100%",
     marginBottom: 15,
@@ -254,5 +273,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 export default MTV;
