@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 interface Transaction {
   id: string;
   beschrijving: string;
@@ -60,14 +59,20 @@ function Biljetten() {
       );
 
       if (biljetIndex !== -1) {
-        updatedBiljetten[biljetIndex].aantalBiljetten += transaction.bedrag / transaction.typeBiljet;
-        updatedBiljetten[biljetIndex].bedrag += transaction.bedrag;
+        if (transaction.typeTransactie === "INKOMEN") {
+          updatedBiljetten[biljetIndex].aantalBiljetten += transaction.bedrag / transaction.typeBiljet;
+          updatedBiljetten[biljetIndex].bedrag += transaction.bedrag;
+        } else if (transaction.typeTransactie === "UITGAVEN") {
+          updatedBiljetten[biljetIndex].aantalBiljetten -= transaction.bedrag / transaction.typeBiljet;
+          updatedBiljetten[biljetIndex].bedrag -= transaction.bedrag;
+        } else {
+          console.error("Invalid transaction type:", transaction.typeTransactie);
+        }
       }
     });
 
     setSoortBiljetten(updatedBiljetten);
   };
-
   const TableRow = ({
     item,
   }: {
@@ -120,10 +125,6 @@ function Biljetten() {
     </>
   );
 }
-
-export default Biljetten;
-
-
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#3E4C59",
@@ -238,3 +239,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+export default Biljetten;
