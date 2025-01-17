@@ -50,7 +50,7 @@ function Saldo() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View>
       <Text style={styles.saldoText}>{saldo}</Text>
     </View>
   );
@@ -59,11 +59,9 @@ function Saldo() {
 export default Saldo;
 
 const styles = StyleSheet.create({
-  container: {
-  },
   saldoText: {
     color: "lightgray",
-    fontFamily: "PlayfairDisplay", // Ensure you have linked the font in the project
+    fontFamily: "PlayfairDisplay",
     fontSize: 34,
   },
 });
