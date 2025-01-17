@@ -72,7 +72,7 @@ const MTV = () => {
       typeTransactie,
       beschrijving,
       typeBiljet,
-      datumTijd: getCurrentDateTime(), // Hier wordt de datum en tijd opgeslagen
+      datumTijd: getCurrentDateTime(),
       id: new Date().toISOString(),
     };
 

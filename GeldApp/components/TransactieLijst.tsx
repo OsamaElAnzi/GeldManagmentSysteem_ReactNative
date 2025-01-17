@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Text, StyleSheet, Pressable, Modal, TouchableOpacity, TextInput, Alert } from "react-native";
+import {
+  View,
+  FlatList,
+  Text,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DropDownPicker from "react-native-dropdown-picker";
 
 interface Transaction {
   id: string;
@@ -13,12 +24,28 @@ interface Transaction {
 
 function TransactieLijst() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editBeschrijving, setEditBeschrijving] = useState("");
   const [editBedrag, setEditBedrag] = useState("");
   const [editTypeTransactie, setEditTypeTransactie] = useState("");
-  const [editTypeBiljet, setEditTypeBiljet] = useState("");
+  const [typeBiljet, setTypeBiljet] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [openEen, setOpenEen] = useState(false);
+  const [biljetten, setBiljetten] = useState([
+    { label: "5 EUR", value: "5" },
+    { label: "10 EUR", value: "10" },
+    { label: "20 EUR", value: "20" },
+    { label: "50 EUR", value: "50" },
+    { label: "100 EUR", value: "100" },
+    { label: "200 EUR", value: "200" },
+    { label: "500 EUR", value: "500" },
+  ]);
+  const [inkomenUitgaven, setInkomenUitgaven] = useState([
+    { label: "Inkomen", value: "INKOMEN" },
+    { label: "Uitgaven", value: "UITGAVEN" },
+  ]);
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -38,6 +65,8 @@ function TransactieLijst() {
     setSelectedTransaction(transaction);
     setEditBeschrijving(transaction.beschrijving);
     setEditBedrag(transaction.bedrag.toString());
+    setEditTypeTransactie(transaction.typeTransactie);
+    setTypeBiljet(transaction.typeBiljet.toString());
     setModalVisible(true);
   };
 
@@ -46,12 +75,20 @@ function TransactieLijst() {
 
     const updatedTransactions = transactions.map((transaction) =>
       transaction.id === selectedTransaction.id
-        ? { ...transaction, beschrijving: editBeschrijving, bedrag: parseFloat(editBedrag) || 0 }
+        ? {
+            ...transaction,
+            beschrijving: editBeschrijving,
+            bedrag: parseFloat(editBedrag) || 0,
+            typeBiljet: parseInt(typeBiljet!) || transaction.typeBiljet,
+          }
         : transaction
     );
 
     try {
-      await AsyncStorage.setItem("@transactie", JSON.stringify(updatedTransactions));
+      await AsyncStorage.setItem(
+        "@transactie",
+        JSON.stringify(updatedTransactions)
+      );
       setTransactions(updatedTransactions);
       setModalVisible(false);
       Alert.alert("Succes", "Transactie bijgewerkt!");
@@ -63,10 +100,15 @@ function TransactieLijst() {
   const deleteTransaction = async () => {
     if (!selectedTransaction) return;
 
-    const filteredTransactions = transactions.filter((transaction) => transaction.id !== selectedTransaction.id);
+    const filteredTransactions = transactions.filter(
+      (transaction) => transaction.id !== selectedTransaction.id
+    );
 
     try {
-      await AsyncStorage.setItem("@transactie", JSON.stringify(filteredTransactions));
+      await AsyncStorage.setItem(
+        "@transactie",
+        JSON.stringify(filteredTransactions)
+      );
       setTransactions(filteredTransactions);
       setModalVisible(false);
       Alert.alert("Succes", "Transactie verwijderd!");
@@ -88,16 +130,25 @@ function TransactieLijst() {
                 <Text style={styles.description}>{item.typeBiljet} EUR</Text>
                 <Text style={styles.description}>{item.typeTransactie}</Text>
               </View>
-              <Text style={[styles.amount, { color: item.typeTransactie === 'UITGAVEN' ? 'red' : 'green' }]}>
-                {item.typeTransactie === 'UITGAVEN' ? '-' : '+'}€{item.bedrag.toFixed(2)}
+              <Text
+                style={[
+                  styles.amount,
+                  {
+                    color: item.typeTransactie === "UITGAVEN" ? "red" : "green",
+                  },
+                ]}
+              >
+                {item.typeTransactie === "UITGAVEN" ? "-" : "+"}€
+                {item.bedrag.toFixed(2)}
               </Text>
             </View>
           </Pressable>
         )}
-        ListEmptyComponent={<Text style={styles.noTransaction}>Geen transacties gemaakt</Text>}
+        ListEmptyComponent={
+          <Text style={styles.noTransaction}>Geen transacties gemaakt</Text>
+        }
       />
 
-      {/* Modal voor Bewerken/Verwijderen */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -117,29 +168,42 @@ function TransactieLijst() {
                   keyboardType="numeric"
                   placeholder="Bedrag"
                 />
-                <TextInput
-                style={styles.modalText}
-                value={editTypeBiljet}
-                onChangeText={setEditTypeBiljet}
-                placeholder="Type Biljet"
+                <DropDownPicker
+                  open={open}
+                  value={typeBiljet}
+                  items={biljetten}
+                  setOpen={setOpen}
+                  setValue={setTypeBiljet}
+                  style={styles.input}
                 />
-                <TextInput
-                style={styles.modalText}
-                value={editTypeTransactie}
-                onChangeText={setEditTypeTransactie}
-                placeholder="Type Transactie"
+                <DropDownPicker
+                  open={openEen}
+                  value={editTypeTransactie}
+                  items={inkomenUitgaven}
+                  setOpen={setOpenEen}
+                  setValue={setEditTypeTransactie}
+                  style={styles.input}
                 />
-                <Text
-                style={styles.modalText}>Datum: {selectedTransaction.datumTijd}
+                <Text style={styles.modalText}>
+                  Datum: {selectedTransaction.datumTijd}
                 </Text>
 
-                <TouchableOpacity style={styles.saveButton} onPress={updateTransaction}>
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={updateTransaction}
+                >
                   <Text style={styles.buttonText}>Opslaan</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteButton} onPress={deleteTransaction}>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={deleteTransaction}
+                >
                   <Text style={styles.buttonText}>Verwijderen</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
                   <Text style={styles.buttonText}>Sluiten</Text>
                 </TouchableOpacity>
               </>
@@ -249,5 +313,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 export default TransactieLijst;
