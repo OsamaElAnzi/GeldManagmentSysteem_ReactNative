@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import SpaarInstellen from '@/components/SpaarInstellen';
 import VermogenInstellen from '@/components/VermogenInstellen';
