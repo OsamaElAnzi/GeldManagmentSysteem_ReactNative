@@ -1,30 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Pressable, Text, StyleSheet, Modal, Alert, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DevSettings } from "react-native";
 
 function SpaarInstellen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [goalName, setGoalName] = useState("");
     const [goal, setGoal] = useState("");
-    const [goalId, setGoalId] = useState(null);
+    const [goalId, setGoalId] = useState<string | null>(null);
+    const [savedGoals, setSavedGoals] = useState<{ id: string; name: string; amount: number; date: string }[]>([]);
 
     const resetForm = () => {
         setGoalName("");
         setGoal("");
         setGoalId(null);
     };
+
     const handleReset = async () => {
         try {
             await AsyncStorage.removeItem("@spaardoel");
+            setSavedGoals([]);
             setModalVisible(false);
-            DevSettings.reload();
             Alert.alert("Succes", "Spaardoelen succesvol verwijderd!");
         } catch (error) {
             console.error("Error removing data from AsyncStorage:", error);
             Alert.alert("Fout", "Er is iets mis gegaan met het verwijderen van de spaardoelen!");
         }
-    }
+    };
+
     const handleAddOrUpdateSpaardoel = async () => {
         if (!goalName || parseFloat(goal) <= 0) {
             Alert.alert("Vul een geldige naam en bedrag in!");
@@ -39,11 +41,10 @@ function SpaarInstellen() {
         };
 
         try {
-            await AsyncStorage.removeItem("@spaardoel");
             const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
             let spaardoel = existingSpaardoel ? JSON.parse(existingSpaardoel) : [];
 
-            const index = spaardoel.findIndex((item:{id: string, name: string, amount: number }) => item.id === spaardoelInfo.id);
+            const index = spaardoel.findIndex((item: { id: string }) => item.id === spaardoelInfo.id);
 
             if (index !== -1) {
                 spaardoel[index] = spaardoelInfo;
@@ -55,13 +56,30 @@ function SpaarInstellen() {
 
             resetForm();
             setModalVisible(false);
-            DevSettings.reload();
+
             Alert.alert("Succes", "Spaardoel succesvol opgeslagen!");
+            loadTransactions();
         } catch (error) {
             console.error("Error saving to AsyncStorage:", error);
             Alert.alert("Fout", "Er is iets mis gegaan met het opslaan van het spaardoel!");
         }
     };
+
+    const loadTransactions = async () => {
+        try {
+            const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
+            if (existingSpaardoel) {
+                const parsedSpaardoelen = JSON.parse(existingSpaardoel);
+                setSavedGoals(parsedSpaardoelen);
+            }
+        } catch (error) {
+            console.error("Error loading transactions from AsyncStorage:", error);
+        }
+    };
+
+    useEffect(() => {
+        loadTransactions();
+    }, []);
 
     return (
         <>
@@ -71,6 +89,7 @@ function SpaarInstellen() {
             >
                 <Text style={styles.cardText}>Spaardoel Instellen</Text>
             </Pressable>
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -127,6 +146,12 @@ function SpaarInstellen() {
 export default SpaarInstellen;
 
 const styles = StyleSheet.create({
+    savedGoalsContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        marginTop: 20,
+    },
     card: {
         backgroundColor: "#3E4C59",
         width: "45%",
@@ -139,6 +164,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5,
+        marginBottom: 10,
+        marginHorizontal: 5,
     },
     cardText: {
         color: "#fff",
@@ -215,3 +242,4 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
 });
+

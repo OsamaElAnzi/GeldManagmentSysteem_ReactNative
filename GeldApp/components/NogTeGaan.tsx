@@ -42,6 +42,8 @@ function NogTeGaan() {
 
           const remainingAmount = parseFloat(parsedSpaardoel[0]?.amount || 0) - saldo;
           setNogTeGaan([{ name: "Nog te gaan", amount: remainingAmount }]);
+        } else {
+          setNogTeGaan([{ name: "Nog te gaan", amount: 0 }]);
         }
       } catch (error) {
         console.error("Error fetching spaardoel:", error);

@@ -14,7 +14,7 @@ export default function TabLayout() {
             backgroundColor: "#1E1E1E",
             borderTopWidth: 0,
           },
-          headerShown: false,
+          headerShown: true,
         }}
       >
         <Tabs.Screen
@@ -24,6 +24,12 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <AntDesign name="linechart" size={24} color={color} />
             ),
+            headerStyle: {
+              backgroundColor: "#1E1E1E",
+            },
+            headerTitleStyle: {
+              color: "#fff",
+            },
           }}
         />
         <Tabs.Screen
@@ -37,6 +43,12 @@ export default function TabLayout() {
                 size={24}
               />
             ),
+            headerStyle: {
+              backgroundColor: "#1E1E1E",
+            },
+            headerTitleStyle: {
+              color: "#fff",
+            },
           }}
         />
         <Tabs.Screen
@@ -46,6 +58,12 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <Ionicons name="settings-outline" size={24} color={color} />
             ),
+            headerStyle: {
+              backgroundColor: "#1E1E1E",
+            },
+            headerTitleStyle: {
+              color: "#fff",
+            },
           }}
         />
       </Tabs>
@@ -56,6 +74,6 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E1E", // Hele achtergrond zwartgrijs
+    backgroundColor: "#1E1E1E",
   },
 });

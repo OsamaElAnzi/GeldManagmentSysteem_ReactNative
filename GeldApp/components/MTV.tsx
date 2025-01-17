@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,7 @@ import {
   View,
   Modal,
   TextInput,
-  Alert,
-  DevSettings
+  Alert
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -35,6 +34,7 @@ const MTV = () => {
     { label: "Inkomen", value: "INKOMEN" },
     { label: "Uitgaven", value: "UITGAVEN" },
   ]);
+  const [transactions, setTransactions] = useState([]);
 
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -85,13 +85,29 @@ const MTV = () => {
 
       resetForm();
       setModalVisible(false);
-      DevSettings.reload();
       Alert.alert("Succes", "Transactie succesvol opgeslagen!");
+
+      loadTransactions();
     } catch (error) {
       console.error("Error saving to AsyncStorage:", error);
       Alert.alert("Fout", "Er is iets mis gegaan met het opslaan van de transactie!");
     }
   };
+
+  const loadTransactions = async () => {
+    try {
+      const existingTransactions = await AsyncStorage.getItem("@transactie");
+      if (existingTransactions) {
+        setTransactions(JSON.parse(existingTransactions));
+      }
+    } catch (error) {
+      console.error("Error loading transactions from AsyncStorage:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadTransactions();
+  }, []);
 
   const handleCloseModal = () => {
     resetForm();
@@ -272,5 +288,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  transactionsContainer: {
+    marginTop: 20,
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  transactionItem: {
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 10,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+  },
 });
+
 export default MTV;

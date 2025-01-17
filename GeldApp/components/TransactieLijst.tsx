@@ -93,7 +93,7 @@ function TransactieLijst() {
       );
       setTransactions(updatedTransactions);
       setModalVisible(false);
-      DevSettings.reload();
+      loadTransactions();
       Alert.alert("Succes", "Transactie bijgewerkt!");
     } catch (error) {
       console.error("Fout bij opslaan:", error);
@@ -114,13 +114,26 @@ function TransactieLijst() {
       );
       setTransactions(filteredTransactions);
       setModalVisible(false);
-      DevSettings.reload();
+      loadTransactions();
       Alert.alert("Succes", "Transactie verwijderd!");
     } catch (error) {
       console.error("Fout bij verwijderen:", error);
     }
   };
+  const loadTransactions = async () => {
+    try {
+      const existingTransactions = await AsyncStorage.getItem("@transactie");
+      if (existingTransactions) {
+        setTransactions(JSON.parse(existingTransactions));
+      }
+    } catch (error) {
+      console.error("Error loading transactions from AsyncStorage:", error);
+    }
+  };
 
+  useEffect(() => {
+    loadTransactions();
+  }, []);
   return (
     <View style={styles.container}>
       <FlatList

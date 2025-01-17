@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Pressable,
   Modal,
-  DevSettings,
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,14 +24,27 @@ const VermogenInstellen = () => {
     try {
         await AsyncStorage.removeItem("@transactie");
         setModalVisible(false);
-        DevSettings.reload();
+        loadTransactions();
         Alert.alert("Succes", "Spaardoelen succesvol verwijderd!");
     } catch (error) {
         console.error("Error removing data from AsyncStorage:", error);
         Alert.alert("Fout", "Er is iets mis gegaan met het verwijderen van de spaardoelen!");
     }
 }
+const loadTransactions = async () => {
+  try {
+    const existingTransactions = await AsyncStorage.getItem("@transactie");
+    if (existingTransactions) {
+      setVermogen(JSON.parse(existingTransactions));
+    }
+  } catch (error) {
+    console.error("Error loading transactions from AsyncStorage:", error);
+  }
+};
 
+useEffect(() => {
+  loadTransactions();
+}, []);
   useEffect(() => {
     const fetchSaldo = async () => {
       console.log("Fetching saldo...");

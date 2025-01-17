@@ -18,11 +18,16 @@ function Saldo() {
         console.log("Existing Transactions for saldo:", existingTransactions);
 
         if (existingTransactions) {
-          const transactions = JSON.parse(existingTransactions);
+          let transactions: Transaction[] = [];
+          try {
+            transactions = JSON.parse(existingTransactions);
+          } catch (e) {
+            console.error("Error parsing transactions:", e);
+          }
+
           const totalSaldo = transactions.reduce(
             (acc: number, transaction: Transaction) => {
-              const bedrag =
-                typeof transaction.bedrag === "number" ? transaction.bedrag : 0;
+              const bedrag = typeof transaction.bedrag === "number" ? transaction.bedrag : 0;
               return transaction.typeTransactie === "INKOMEN"
                 ? acc + bedrag
                 : acc - bedrag;
@@ -47,6 +52,10 @@ function Saldo() {
     };
 
     fetchSaldo();
+
+    const intervalId = setInterval(fetchSaldo, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
