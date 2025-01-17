@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  DevSettings,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -43,8 +44,8 @@ function TransactieLijst() {
     { label: "500 EUR", value: "500" },
   ]);
   const [inkomenUitgaven, setInkomenUitgaven] = useState([
-    { label: "Inkomen", value: "INKOMEN" },
-    { label: "Uitgaven", value: "UITGAVEN" },
+    { label: "INKOMEN", value: "INKOMEN" },
+    { label: "UITGAVEN", value: "UITGAVEN" },
   ]);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ function TransactieLijst() {
             beschrijving: editBeschrijving,
             bedrag: parseFloat(editBedrag) || 0,
             typeBiljet: parseInt(typeBiljet!) || transaction.typeBiljet,
+            typeTransactie: editTypeTransactie,
           }
         : transaction
     );
@@ -91,6 +93,7 @@ function TransactieLijst() {
       );
       setTransactions(updatedTransactions);
       setModalVisible(false);
+      DevSettings.reload();
       Alert.alert("Succes", "Transactie bijgewerkt!");
     } catch (error) {
       console.error("Fout bij opslaan:", error);
@@ -111,6 +114,7 @@ function TransactieLijst() {
       );
       setTransactions(filteredTransactions);
       setModalVisible(false);
+      DevSettings.reload();
       Alert.alert("Succes", "Transactie verwijderd!");
     } catch (error) {
       console.error("Fout bij verwijderen:", error);
@@ -169,20 +173,22 @@ function TransactieLijst() {
                   placeholder="Bedrag"
                 />
                 <DropDownPicker
-                  open={open}
-                  value={typeBiljet}
-                  items={biljetten}
-                  setOpen={setOpen}
-                  setValue={setTypeBiljet}
-                  style={styles.input}
-                />
-                <DropDownPicker
                   open={openEen}
                   value={editTypeTransactie}
                   items={inkomenUitgaven}
                   setOpen={setOpenEen}
                   setValue={setEditTypeTransactie}
-                  style={styles.input}
+                  style={styles.dropdown1}
+                  textStyle={styles.dropdownText}
+                />
+                <DropDownPicker
+                  open={open}
+                  value={typeBiljet}
+                  items={biljetten}
+                  setOpen={setOpen}
+                  setValue={setTypeBiljet}
+                  style={styles.dropdown}
+                  textStyle={styles.dropdownText}
                 />
                 <Text style={styles.modalText}>
                   Datum: {selectedTransaction.datumTijd}
@@ -218,6 +224,26 @@ function TransactieLijst() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+  },
+  dropdown1: {
+    width: "100%",
+    marginBottom: 15,
+    backgroundColor: "#f9f9f9",
+    borderColor: "#ddd",
+    borderRadius: 8,
+    zIndex: 1,
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  dropdown: {
+    width: "100%",
+    marginBottom: 15,
+    backgroundColor: "#f9f9f9",
+    borderColor: "#ddd",
+    borderRadius: 8,
+    zIndex: 0,
   },
   transactionItem: {
     padding: 10,
