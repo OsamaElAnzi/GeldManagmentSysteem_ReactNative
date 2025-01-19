@@ -8,9 +8,6 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -31,7 +28,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "##FFF9F9"
+          "backgroundColor": "#FFF9F9"
         }
       ]
     ],
@@ -45,6 +42,7 @@
       "eas": {
         "projectId": "0934aec7-afc3-48af-9710-90e01a9ce983"
       }
-    }
+    },
+    "owner": "osamaelanzi"
   }
 }
