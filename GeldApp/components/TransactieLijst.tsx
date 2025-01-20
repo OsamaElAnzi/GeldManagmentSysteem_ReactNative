@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-  DevSettings,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -74,7 +73,7 @@ function TransactieLijst() {
   const updateTransaction = async () => {
     if (!selectedTransaction) return;
 
-    const updatedTransactions = transactions.map((transaction) =>
+    const updatedTransactions = transactions.map((transaction: Transaction) =>
       transaction.id === selectedTransaction.id
         ? {
             ...transaction,
@@ -104,7 +103,7 @@ function TransactieLijst() {
     if (!selectedTransaction) return;
 
     const filteredTransactions = transactions.filter(
-      (transaction) => transaction.id !== selectedTransaction.id
+      (transaction: Transaction) => transaction.id !== selectedTransaction.id
     );
 
     try {

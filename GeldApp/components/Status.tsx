@@ -1,4 +1,3 @@
-import React from 'react';
 import Spaardoel from './Spaardoel'
 import NogTeGaan from './NogTeGaan'
 import { StyleSheet, Text, View } from 'react-native';

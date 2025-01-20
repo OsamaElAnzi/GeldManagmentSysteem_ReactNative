@@ -21,7 +21,7 @@ export default function TabLayout() {
           name="transacties"
           options={{
             title: "Transactie",
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color }: { color: string }) => (
               <AntDesign name="linechart" size={24} color={color} />
             ),
             headerStyle: {
@@ -36,7 +36,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: "Home",
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
               <Ionicons
                 name={focused ? "home-sharp" : "home-outline"}
                 color={color}
@@ -55,7 +55,7 @@ export default function TabLayout() {
           name="settings"
           options={{
             title: "Settings",
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color }: { color: string }) => (
               <Ionicons name="settings-outline" size={24} color={color} />
             ),
             headerStyle: {
