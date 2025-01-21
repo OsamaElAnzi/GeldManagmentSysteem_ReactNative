@@ -96,7 +96,7 @@ function Biljetten() {
   return (
     <>
       <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
-        <Text style={styles.cardText}>Biljetten  Overzicht</Text>
+        <Text style={styles.cardText}>Biljetten     Overzicht</Text>
       </Pressable>
       <Modal
         animationType="slide"

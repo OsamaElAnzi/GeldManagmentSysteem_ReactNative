@@ -6,7 +6,6 @@ function SpaarInstellen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [goalName, setGoalName] = useState("");
     const [goal, setGoal] = useState<number | "">("");
-    
     useEffect(() => {
         const fetchSpaardoel = async () => {
             try {
@@ -47,7 +46,7 @@ function SpaarInstellen() {
     return (
         <>
             <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
-                <Text style={styles.cardText}>Spaardoel Instellen</Text>
+                <Text style={styles.cardText}>Spaardoel   Instellen</Text>
             </Pressable>
 
             <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>

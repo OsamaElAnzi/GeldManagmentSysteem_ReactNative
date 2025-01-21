@@ -87,7 +87,7 @@ useEffect(() => {
   return (
     <>
       <Pressable style={styles.card} onPress={() => setModalVisible(true)}>
-        <Text style={styles.cardText}>Vermogen Bekijken</Text>
+        <Text style={styles.cardText}>Vermogen   Bekijken</Text>
       </Pressable>
       <Modal
         animationType="slide"
