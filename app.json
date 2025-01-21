@@ -8,13 +8,10 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#171616"
+        "backgroundColor": "#1E1E1E"
       },
       "package": "com.osamaelanzi.GeldApp"
     },
@@ -31,7 +28,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "##FFF9F9"
+          "backgroundColor": "1E1E1E"
         }
       ]
     ],

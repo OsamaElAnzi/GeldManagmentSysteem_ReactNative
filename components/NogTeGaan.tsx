@@ -9,8 +9,8 @@ interface Transaction {
 
 function NogTeGaan() {
   const [nogTeGaan, setNogTeGaan] = useState<{ name: string; amount: number }[]>([]);
-  const [spaardoel, setSpaardoel] = useState<{ name: string; amount: number }[]>([]);
   const [saldo, setSaldo] = useState<number>(0);
+  const [spaardoel, setSpaardoel] = useState<{ name: string; amount: number }[]>([]);
 
   useEffect(() => {
     const fetchTussenstand = async () => {
@@ -53,20 +53,58 @@ function NogTeGaan() {
     fetchTussenstand();
   }, [saldo]);
 
+  useEffect(() => {
+    const fetchTussenstand = async () => {
+      try {
+        const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
+        const existingTransactions = await AsyncStorage.getItem("@transactie");
+
+        console.log("Existing Transactions for saldo:", existingTransactions);
+
+        if (existingTransactions) {
+          const transactions = JSON.parse(existingTransactions);
+          const totalSaldo = transactions.reduce(
+            (acc: number, transaction: Transaction) => {
+              const bedrag = typeof transaction.bedrag === "number" ? transaction.bedrag : 0;
+              return transaction.typeTransactie === "INKOMEN"
+                ? acc + bedrag
+                : acc - bedrag;
+            },
+            0
+          );
+          setSaldo(totalSaldo);
+
+          console.log("Total Saldo:", totalSaldo);
+        }
+
+        if (existingSpaardoel) {
+          const parsedSpaardoel = JSON.parse(existingSpaardoel);
+          const remainingAmount = parseFloat(parsedSpaardoel[0]?.amount || 0) - saldo;
+          setNogTeGaan([{ name: "Nog te gaan", amount: remainingAmount }]);
+        } else {
+          setNogTeGaan([{ name: "Nog te gaan", amount: 0 }]);
+        }
+      } catch (error) {
+        console.error("Error fetching spaardoel:", error);
+      }
+    };
+
+    fetchTussenstand();
+    const interval = setInterval(fetchTussenstand, 2000);
+    return () => clearInterval(interval);
+  }, [saldo]);
+
   return (
     <View style={styles.card}>
-        {nogTeGaan.map((item, index) => (
-          <View
-          style={styles.goalContainer}
-          key={index}>
-            <Text style={styles.goalTitle}>{item.name}</Text>
-            <Text style={styles.goalAmount}>€ {item.amount.toFixed(2)}</Text>
-          </View>
-        ))}
+      {nogTeGaan.map((item, index) => (
+        <View style={styles.goalContainer} key={index}>
+          <Text style={styles.goalTitle}>{item.name}</Text>
+          <Text style={styles.goalAmount}>€ {item.amount.toFixed(2)}</Text>
+        </View>
+      ))}
     </View>
   );
 }
-
 export default NogTeGaan;
 
 const styles = StyleSheet.create({
