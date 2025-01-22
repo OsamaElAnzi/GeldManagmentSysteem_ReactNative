@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
   StyleSheet,
   Pressable,
   Modal,
@@ -24,27 +22,14 @@ const VermogenInstellen = () => {
     try {
         await AsyncStorage.removeItem("@transactie");
         setModalVisible(false);
-        loadTransactions();
         Alert.alert("Succes", "Spaardoelen succesvol verwijderd!");
     } catch (error) {
         console.error("Error removing data from AsyncStorage:", error);
         Alert.alert("Fout", "Er is iets mis gegaan met het verwijderen van de spaardoelen!");
     }
 }
-const loadTransactions = async () => {
-  try {
-    const existingTransactions = await AsyncStorage.getItem("@transactie");
-    if (existingTransactions) {
-      setVermogen(JSON.parse(existingTransactions));
-    }
-  } catch (error) {
-    console.error("Error loading transactions from AsyncStorage:", error);
-  }
-};
 
-useEffect(() => {
-  loadTransactions();
-}, []);
+
   useEffect(() => {
     const fetchSaldo = async () => {
       console.log("Fetching saldo...");
@@ -82,6 +67,10 @@ useEffect(() => {
     };
 
     fetchSaldo();
+    const intertvalFetchSaldo = setInterval(fetchSaldo, 2000);
+    return () => {
+      clearInterval(intertvalFetchSaldo);
+    };
   }, []);
 
   return (

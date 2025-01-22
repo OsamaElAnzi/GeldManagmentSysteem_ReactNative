@@ -37,6 +37,8 @@ const ChartComponent = () => {
     };
 
     fetchSpaardoel();
+    const intervalId = setInterval(fetchSpaardoel, 2000);
+    return () => clearInterval(intervalId);
   }, [saldo]);
 
   useEffect(() => {
@@ -62,6 +64,8 @@ const ChartComponent = () => {
     };
 
     fetchSaldo();
+    const intervalId = setInterval(fetchSaldo, 2000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const radius = 60;

@@ -19,7 +19,7 @@ interface Transaction {
 
 function Biljetten() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [, setTransactions] = useState<Transaction[]>([]);
+  const [transaction, setTransactions] = useState<Transaction[]>([]);
   const [soortBiljetten, setSoortBiljetten] = useState([
     { id: "1", label: "5 EUR", aantalBiljetten: 0, bedrag: 0 },
     { id: "2", label: "10 EUR", aantalBiljetten: 0, bedrag: 0 },
@@ -44,6 +44,8 @@ function Biljetten() {
       }
     }
     fetchTransactions();
+    const intervalTransactions = setInterval(fetchTransactions, 2000);
+    return () => clearInterval(intervalTransactions);
   }, []);
 
   const calculateBiljetten = (transactions: Transaction[]) => {

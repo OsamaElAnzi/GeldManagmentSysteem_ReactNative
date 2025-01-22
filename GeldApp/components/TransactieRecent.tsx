@@ -12,12 +12,11 @@ interface Transaction {
 
 function TransactieRecent() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-
   useEffect(() => {
     async function fetchTransactions() {
       try {
         const existingTransactions = await AsyncStorage.getItem("@transactie");
-        if (existingTransactions !== null) {
+        if (existingTransactions) {
           setTransactions(JSON.parse(existingTransactions));
         }
       } catch (err) {
@@ -25,6 +24,8 @@ function TransactieRecent() {
       }
     }
     fetchTransactions();
+    const intervalTransactions = setInterval(fetchTransactions, 2000)
+    return () => clearInterval(intervalTransactions);
   }, []);
 
   return (

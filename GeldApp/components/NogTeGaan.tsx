@@ -17,9 +17,10 @@ function NogTeGaan() {
       try {
         const existingSpaardoel = await AsyncStorage.getItem("@spaardoel");
         const existingTransactions = await AsyncStorage.getItem("@transactie");
-
+        
         console.log("Existing Transactions for saldo:", existingTransactions);
-
+        console.log("Spaardoel:", existingSpaardoel);
+        console.log("Nog te gaan:", nogTeGaan);
         if (existingTransactions) {
           const transactions = JSON.parse(existingTransactions);
           const totalSaldo = transactions.reduce(
@@ -49,8 +50,11 @@ function NogTeGaan() {
         console.error("Error fetching spaardoel:", error);
       }
     };
-
     fetchTussenstand();
+    const intervalId = setInterval(fetchTussenstand, 2000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [saldo]);
 
   return (

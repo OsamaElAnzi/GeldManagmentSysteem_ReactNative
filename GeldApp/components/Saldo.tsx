@@ -53,7 +53,7 @@ function Saldo() {
 
     fetchSaldo();
 
-    const intervalId = setInterval(fetchSaldo, 5000);
+    const intervalId = setInterval(fetchSaldo, 2000);
 
     return () => clearInterval(intervalId);
   }, []);
