@@ -24,8 +24,8 @@ interface Transaction {
 
 function TransactieLijst() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editBeschrijving, setEditBeschrijving] = useState("");
   const [editBedrag, setEditBedrag] = useState("");
@@ -33,7 +33,7 @@ function TransactieLijst() {
   const [typeBiljet, setTypeBiljet] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [openEen, setOpenEen] = useState(false);
-  const [biljetten, setBiljetten] = useState([
+  const [biljetten] = useState([
     { label: "5 EUR", value: "5" },
     { label: "10 EUR", value: "10" },
     { label: "20 EUR", value: "20" },
@@ -42,26 +42,29 @@ function TransactieLijst() {
     { label: "200 EUR", value: "200" },
     { label: "500 EUR", value: "500" },
   ]);
-  const [inkomenUitgaven, setInkomenUitgaven] = useState([
+  const [inkomenUitgaven] = useState([
     { label: "INKOMEN", value: "INKOMEN" },
     { label: "UITGAVEN", value: "UITGAVEN" },
   ]);
 
-  useEffect(() => {
-    async function fetchTransactions() {
-      try {
-        const existingTransactions = await AsyncStorage.getItem("@transactie");
-        if (existingTransactions !== null) {
-          setTransactions(JSON.parse(existingTransactions));
-        }
-      } catch (err) {
-        console.log("Error retrieving data from AsyncStorage", err);
+  async function fetchTransactions() {
+    try {
+      const existingTransactions = await AsyncStorage.getItem("@transactie");
+      if (existingTransactions !== null) {
+        const parsedTransactions = JSON.parse(existingTransactions);
+        setTransactions(parsedTransactions);
+        setFilteredTransactions(parsedTransactions); // Initialize filtered transactions
       }
+    } catch (err) {
+      console.log("Error retrieving data from AsyncStorage", err);
     }
+  }
+
+  useEffect(() => {
     fetchTransactions();
-    const intervalDelete = setInterval(() => deleteTransaction, 2000);
-    const intervalUpdate = setInterval(() => updateTransaction, 2000);
-    const intervalTransactions = setInterval(() => fetchTransactions, 2000);
+    const intervalDelete = setInterval(deleteTransaction, 2000);
+    const intervalUpdate = setInterval(updateTransaction, 2000);
+    const intervalTransactions = setInterval(fetchTransactions, 2000);
     return () => {
       clearInterval(intervalDelete);
       clearInterval(intervalUpdate);
@@ -99,6 +102,7 @@ function TransactieLijst() {
         JSON.stringify(updatedTransactions)
       );
       setTransactions(updatedTransactions);
+      setFilteredTransactions(updatedTransactions); // Update filtered transactions
       setModalVisible(false);
       Alert.alert("Succes", "Transactie bijgewerkt!");
     } catch (error) {
@@ -119,28 +123,32 @@ function TransactieLijst() {
         JSON.stringify(filteredTransactions)
       );
       setTransactions(filteredTransactions);
+      setFilteredTransactions(filteredTransactions); // Update filtered transactions
       setModalVisible(false);
       Alert.alert("Succes", "Transactie verwijderd!");
     } catch (error) {
       console.error("Fout bij verwijderen:", error);
     }
   };
-  function Alles() {
-    const filteredTransactions = transactions;
-    setTransactions(filteredTransactions);
-  }
-  function INKOMEN() {
-    const filteredTransactions = transactions.filter(
+
+  const Alles = () => {
+    setFilteredTransactions(transactions);
+  };
+
+  const INKOMEN = () => {
+    const incomeTransactions = transactions.filter(
       (transaction: Transaction) => transaction.typeTransactie === "INKOMEN"
     );
-    setTransactions(filteredTransactions);
-  }
-  function UITGAVEN() {
-    const filteredTransactions = transactions.filter(
+    setFilteredTransactions(incomeTransactions);
+  };
+
+  const UITGAVEN = () => {
+    const expenseTransactions = transactions.filter(
       (transaction: Transaction) => transaction.typeTransactie === "UITGAVEN"
     );
-    setTransactions(filteredTransactions);
-  }
+    setFilteredTransactions(expenseTransactions);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.Soort}>
@@ -155,7 +163,7 @@ function TransactieLijst() {
         </Pressable>
       </View>
       <FlatList
-        data={transactions}
+        data={filteredTransactions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable onPress={() => openModal(item)}>
@@ -386,4 +394,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 export default TransactieLijst;
