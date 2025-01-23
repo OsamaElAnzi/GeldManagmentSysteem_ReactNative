@@ -24,10 +24,11 @@ interface Transaction {
 
 function TransactieLijst() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editBeschrijving, setEditBeschrijving] = useState("");
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [editBedrag, setEditBedrag] = useState("");
   const [editTypeTransactie, setEditTypeTransactie] = useState("");
   const [typeBiljet, setTypeBiljet] = useState<string | null>(null);
@@ -51,9 +52,7 @@ function TransactieLijst() {
     try {
       const existingTransactions = await AsyncStorage.getItem("@transactie");
       if (existingTransactions !== null) {
-        const parsedTransactions = JSON.parse(existingTransactions);
-        setTransactions(parsedTransactions);
-        setFilteredTransactions(parsedTransactions); // Initialize filtered transactions
+        setTransactions(JSON.parse(existingTransactions));
       }
     } catch (err) {
       console.log("Error retrieving data from AsyncStorage", err);
@@ -62,9 +61,9 @@ function TransactieLijst() {
 
   useEffect(() => {
     fetchTransactions();
-    const intervalDelete = setInterval(deleteTransaction, 2000);
-    const intervalUpdate = setInterval(updateTransaction, 2000);
-    const intervalTransactions = setInterval(fetchTransactions, 2000);
+    const intervalDelete = setInterval(() => deleteTransaction, 2000);
+    const intervalUpdate = setInterval(() => updateTransaction, 2000);
+    const intervalTransactions = setInterval(() => fetchTransactions, 2000);
     return () => {
       clearInterval(intervalDelete);
       clearInterval(intervalUpdate);
@@ -102,7 +101,6 @@ function TransactieLijst() {
         JSON.stringify(updatedTransactions)
       );
       setTransactions(updatedTransactions);
-      setFilteredTransactions(updatedTransactions); // Update filtered transactions
       setModalVisible(false);
       Alert.alert("Succes", "Transactie bijgewerkt!");
     } catch (error) {
@@ -123,32 +121,27 @@ function TransactieLijst() {
         JSON.stringify(filteredTransactions)
       );
       setTransactions(filteredTransactions);
-      setFilteredTransactions(filteredTransactions); // Update filtered transactions
       setModalVisible(false);
       Alert.alert("Succes", "Transactie verwijderd!");
     } catch (error) {
       console.error("Fout bij verwijderen:", error);
     }
   };
-
-  const Alles = () => {
+  function Alles() {
     setFilteredTransactions(transactions);
-  };
-
-  const INKOMEN = () => {
-    const incomeTransactions = transactions.filter(
+  }
+  function INKOMEN() {
+    const filteredTransactions = transactions.filter(
       (transaction: Transaction) => transaction.typeTransactie === "INKOMEN"
     );
-    setFilteredTransactions(incomeTransactions);
-  };
-
-  const UITGAVEN = () => {
-    const expenseTransactions = transactions.filter(
+    setFilteredTransactions(filteredTransactions);
+  }
+  function UITGAVEN() {
+    const filteredTransactions = transactions.filter(
       (transaction: Transaction) => transaction.typeTransactie === "UITGAVEN"
     );
-    setFilteredTransactions(expenseTransactions);
-  };
-
+    setFilteredTransactions(filteredTransactions);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.Soort}>
@@ -394,5 +387,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 export default TransactieLijst;
