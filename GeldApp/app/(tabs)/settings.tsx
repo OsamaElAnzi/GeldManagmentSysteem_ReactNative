@@ -30,6 +30,7 @@ export default settings;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical: 20,
     backgroundColor: '#25292e',
     alignItems: 'center',
   },
