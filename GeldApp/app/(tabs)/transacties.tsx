@@ -13,7 +13,7 @@ const Transacties = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        paddingVertical: 20,
         backgroundColor: '#25292e',
     },
     text: {
