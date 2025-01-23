@@ -59,9 +59,9 @@ function TransactieLijst() {
       }
     }
     fetchTransactions();
-    const intervalDelete = setInterval(deleteTransaction, 2000);
-    const intervalUpdate = setInterval(updateTransaction, 2000);
-    const intervalTransactions = setInterval(fetchTransactions, 2000);
+    const intervalDelete = setInterval(() => deleteTransaction, 2000);
+    const intervalUpdate = setInterval(() => updateTransaction, 2000);
+    const intervalTransactions = setInterval(() => fetchTransactions, 2000);
     return () => {
       clearInterval(intervalDelete);
       clearInterval(intervalUpdate);
@@ -125,9 +125,35 @@ function TransactieLijst() {
       console.error("Fout bij verwijderen:", error);
     }
   };
-
+  function Alles() {
+    const filteredTransactions = transactions;
+    setTransactions(filteredTransactions);
+  }
+  function INKOMEN() {
+    const filteredTransactions = transactions.filter(
+      (transaction: Transaction) => transaction.typeTransactie === "INKOMEN"
+    );
+    setTransactions(filteredTransactions);
+  }
+  function UITGAVEN() {
+    const filteredTransactions = transactions.filter(
+      (transaction: Transaction) => transaction.typeTransactie === "UITGAVEN"
+    );
+    setTransactions(filteredTransactions);
+  }
   return (
     <View style={styles.container}>
+      <View style={styles.Soort}>
+        <Pressable onPress={Alles} style={styles.Button}>
+          <Text style={styles.buttonText}>Alles</Text>
+        </Pressable>
+        <Pressable onPress={INKOMEN} style={styles.Button}>
+          <Text style={styles.buttonText}>INKOMEN</Text>
+        </Pressable>
+        <Pressable onPress={UITGAVEN} style={styles.Button}>
+          <Text style={styles.buttonText}>UITGAVEN</Text>
+        </Pressable>
+      </View>
       <FlatList
         data={transactions}
         keyExtractor={(item) => item.id}
@@ -229,6 +255,11 @@ function TransactieLijst() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+  },
+  Soort: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   dropdown1: {
     width: "100%",
@@ -342,6 +373,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  Button: {
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    alignItems: "center",
+    padding: 10,
+    marginHorizontal: 5,
+    marginVertical: 15,
+    marginBottom: 5,
+    width: "30%",
+    fontSize: 16,
   },
 });
 export default TransactieLijst;
