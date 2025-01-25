@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -23,6 +24,7 @@ interface Transaction {
 }
 
 function TransactieLijst() {
+  const [activeFilter, setActiveFilter] = useState("ALLES");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -128,35 +130,52 @@ function TransactieLijst() {
     }
   };
   function Alles() {
+    setActiveFilter("ALLES");
     setFilteredTransactions(transactions);
   }
+  
   function INKOMEN() {
-    const filteredTransactions = transactions.filter(
-      (transaction: Transaction) => transaction.typeTransactie === "INKOMEN"
+    setActiveFilter("INKOMEN");
+    const filtered = transactions.filter(
+      (transaction) => transaction.typeTransactie === "INKOMEN"
     );
-    setFilteredTransactions(filteredTransactions);
+    setFilteredTransactions(filtered);
   }
+  
   function UITGAVEN() {
-    const filteredTransactions = transactions.filter(
-      (transaction: Transaction) => transaction.typeTransactie === "UITGAVEN"
+    setActiveFilter("UITGAVEN");
+    const filtered = transactions.filter(
+      (transaction) => transaction.typeTransactie === "UITGAVEN"
     );
-    setFilteredTransactions(filteredTransactions);
+    setFilteredTransactions(filtered);
   }
+  
   return (
     <View style={styles.container}>
       <View style={styles.Soort}>
-        <Pressable onPress={Alles} style={styles.Button}>
-          <Text style={styles.buttonText}>Alles</Text>
-        </Pressable>
-        <Pressable onPress={INKOMEN} style={styles.Button}>
-          <Text style={styles.buttonText}>INKOMEN</Text>
-        </Pressable>
-        <Pressable onPress={UITGAVEN} style={styles.Button}>
-          <Text style={styles.buttonText}>UITGAVEN</Text>
-        </Pressable>
+      <Pressable
+    onPress={Alles}
+    style={[styles.Button, activeFilter === "ALLES" && styles.activeButton]}
+  >
+    <Text style={styles.buttonText}>Alles</Text>
+  </Pressable>
+
+  <Pressable
+    onPress={INKOMEN}
+    style={[styles.Button, activeFilter === "INKOMEN" && styles.activeButton]}
+  >
+    <Text style={styles.buttonText}>INKOMEN</Text>
+  </Pressable>
+
+  <Pressable
+    onPress={UITGAVEN}
+    style={[styles.Button, activeFilter === "UITGAVEN" && styles.activeButton]}
+  >
+    <Text style={styles.buttonText}>UITGAVEN</Text>
+  </Pressable>
       </View>
       <FlatList
-        data={filteredTransactions}
+        data={filteredTransactions.length === 0 ? transactions : filteredTransactions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable onPress={() => openModal(item)}>
@@ -376,7 +395,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   Button: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#2980b9",
     borderRadius: 5,
     alignItems: "center",
     padding: 10,
@@ -385,6 +404,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: "30%",
     fontSize: 16,
+  },
+  activeButton: {
+    backgroundColor: "#3498db",
   },
 });
 export default TransactieLijst;
