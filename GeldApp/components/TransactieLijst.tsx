@@ -48,28 +48,26 @@ function TransactieLijst() {
     { label: "UITGAVEN", value: "UITGAVEN" },
   ]);
 
-  useEffect(() => {
-    async function fetchTransactions() {
-      try {
-        const existingTransactions = await AsyncStorage.getItem("@transactie");
-        if (existingTransactions) {
-          setTransactions(JSON.parse(existingTransactions));
-        }
-      } catch (err) {
-        console.log("Error retrieving data from AsyncStorage", err);
+  async function fetchTransactions() {
+    try {
+      const existingTransactions = await AsyncStorage.getItem("@transactie");
+      if (existingTransactions !== null) {
+        setTransactions(JSON.parse(existingTransactions));
       }
+    } catch (err) {
+      console.log("Error retrieving data from AsyncStorage", err);
     }
-    fetchTransactions();
-    const intervalTransactions = setInterval(fetchTransactions, 2000)
-    return () => clearInterval(intervalTransactions);
-  }, []);
+  }
 
   useEffect(() => {
+    fetchTransactions();
     const intervalDelete = setInterval(() => deleteTransaction, 2000);
     const intervalUpdate = setInterval(() => updateTransaction, 2000);
+    const intervalTransactions = setInterval(() => fetchTransactions, 2000);
     return () => {
       clearInterval(intervalDelete);
       clearInterval(intervalUpdate);
+      clearInterval(intervalTransactions);
     };
   }, []);
 
@@ -129,8 +127,34 @@ function TransactieLijst() {
       console.error("Fout bij verwijderen:", error);
     }
   };
+  function Alles() {
+    setFilteredTransactions(transactions);
+  }
+  function INKOMEN() {
+    const filteredTransactions = transactions.filter(
+      (transaction: Transaction) => transaction.typeTransactie === "INKOMEN"
+    );
+    setFilteredTransactions(filteredTransactions);
+  }
+  function UITGAVEN() {
+    const filteredTransactions = transactions.filter(
+      (transaction: Transaction) => transaction.typeTransactie === "UITGAVEN"
+    );
+    setFilteredTransactions(filteredTransactions);
+  }
   return (
     <View style={styles.container}>
+      <View style={styles.Soort}>
+        <Pressable onPress={() => Alles} style={styles.Button}>
+          <Text style={styles.buttonText}>Alles</Text>
+        </Pressable>
+        <Pressable onPress={INKOMEN} style={styles.Button}>
+          <Text style={styles.buttonText}>INKOMEN</Text>
+        </Pressable>
+        <Pressable onPress={UITGAVEN} style={styles.Button}>
+          <Text style={styles.buttonText}>UITGAVEN</Text>
+        </Pressable>
+      </View>
       <FlatList
         data={transactions}
         keyExtractor={(item) => item.id}
