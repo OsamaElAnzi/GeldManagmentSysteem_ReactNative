@@ -43,6 +43,9 @@
         "projectId": "0934aec7-afc3-48af-9710-90e01a9ce983"
       }
     },
-    "owner": "osamaelanzi"
+    "owner": "osamaelanzi",
+    "ios": {
+      "bundleIdentifier": "com.osamaelanzi.GeldApp"
+    }
   }
 }

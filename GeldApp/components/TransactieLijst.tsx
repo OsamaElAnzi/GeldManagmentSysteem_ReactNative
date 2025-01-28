@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -24,7 +23,6 @@ interface Transaction {
 }
 
 function TransactieLijst() {
-  const [activeFilter, setActiveFilter] = useState("ALLES");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -50,26 +48,28 @@ function TransactieLijst() {
     { label: "UITGAVEN", value: "UITGAVEN" },
   ]);
 
-  async function fetchTransactions() {
-    try {
-      const existingTransactions = await AsyncStorage.getItem("@transactie");
-      if (existingTransactions !== null) {
-        setTransactions(JSON.parse(existingTransactions));
+  useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const existingTransactions = await AsyncStorage.getItem("@transactie");
+        if (existingTransactions) {
+          setTransactions(JSON.parse(existingTransactions));
+        }
+      } catch (err) {
+        console.log("Error retrieving data from AsyncStorage", err);
       }
-    } catch (err) {
-      console.log("Error retrieving data from AsyncStorage", err);
     }
-  }
+    fetchTransactions();
+    const intervalTransactions = setInterval(fetchTransactions, 2000)
+    return () => clearInterval(intervalTransactions);
+  }, []);
 
   useEffect(() => {
-    fetchTransactions();
     const intervalDelete = setInterval(() => deleteTransaction, 2000);
     const intervalUpdate = setInterval(() => updateTransaction, 2000);
-    const intervalTransactions = setInterval(() => fetchTransactions, 2000);
     return () => {
       clearInterval(intervalDelete);
       clearInterval(intervalUpdate);
-      clearInterval(intervalTransactions);
     };
   }, []);
 
@@ -129,53 +129,10 @@ function TransactieLijst() {
       console.error("Fout bij verwijderen:", error);
     }
   };
-  function Alles() {
-    setActiveFilter("ALLES");
-    setFilteredTransactions(transactions);
-  }
-  
-  function INKOMEN() {
-    setActiveFilter("INKOMEN");
-    const filtered = transactions.filter(
-      (transaction) => transaction.typeTransactie === "INKOMEN"
-    );
-    setFilteredTransactions(filtered);
-  }
-  
-  function UITGAVEN() {
-    setActiveFilter("UITGAVEN");
-    const filtered = transactions.filter(
-      (transaction) => transaction.typeTransactie === "UITGAVEN"
-    );
-    setFilteredTransactions(filtered);
-  }
-  
   return (
     <View style={styles.container}>
-      <View style={styles.Soort}>
-      <Pressable
-    onPress={Alles}
-    style={[styles.Button, activeFilter === "ALLES" && styles.activeButton]}
-  >
-    <Text style={styles.buttonText}>Alles</Text>
-  </Pressable>
-
-  <Pressable
-    onPress={INKOMEN}
-    style={[styles.Button, activeFilter === "INKOMEN" && styles.activeButton]}
-  >
-    <Text style={styles.buttonText}>INKOMEN</Text>
-  </Pressable>
-
-  <Pressable
-    onPress={UITGAVEN}
-    style={[styles.Button, activeFilter === "UITGAVEN" && styles.activeButton]}
-  >
-    <Text style={styles.buttonText}>UITGAVEN</Text>
-  </Pressable>
-      </View>
       <FlatList
-        data={filteredTransactions.length === 0 ? transactions : filteredTransactions}
+        data={transactions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable onPress={() => openModal(item)}>
@@ -395,7 +352,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   Button: {
-    backgroundColor: "#2980b9",
+    backgroundColor: "#007bff",
     borderRadius: 5,
     alignItems: "center",
     padding: 10,
@@ -404,9 +361,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: "30%",
     fontSize: 16,
-  },
-  activeButton: {
-    backgroundColor: "#3498db",
   },
 });
 export default TransactieLijst;
